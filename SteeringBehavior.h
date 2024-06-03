@@ -21,7 +21,7 @@ protected:
   Flock &flock;
 
 private:
-  virtual sf::Vector2f compute_one_member(FlockMember &member) = 0;
+  virtual sf::Vector2f compute_one_member(FlockMember const& member) = 0;
     float coefficient{1.};
 };
 
@@ -34,7 +34,7 @@ public:
 
 private:
   sf::Vector2f target;
-  sf::Vector2f compute_one_member(FlockMember &member) override;
+  sf::Vector2f compute_one_member(FlockMember const& member) override;
 };
 
 class Arrival final : public SteeringBehavior {
@@ -47,7 +47,7 @@ public:
 private:
   sf::Vector2f target;
   float slowdown_distance;
-  sf::Vector2f compute_one_member(FlockMember &member) override;
+  sf::Vector2f compute_one_member(FlockMember const& member) override;
 };
 
 
@@ -60,7 +60,35 @@ public:
 
 private:
   sf::Vector2f target;
-  sf::Vector2f compute_one_member(FlockMember &member) override;
+  sf::Vector2f compute_one_member(FlockMember const& member) override;
+};
+
+
+class Cohesion final : public SteeringBehavior {
+public:
+    explicit Cohesion(Flock &flock, float radius) : SteeringBehavior{flock}, radius{radius} {};
+private:
+    float radius;
+    sf::Vector2f compute_one_member(FlockMember const& member) override;
+};
+
+
+
+class Separation final : public SteeringBehavior {
+public:
+    explicit Separation(Flock &flock, float radius) : SteeringBehavior{flock}, radius{radius} {};
+private:
+    float radius;
+    sf::Vector2f compute_one_member(FlockMember const& member) override;
+};
+
+
+class Alignment final : public SteeringBehavior {
+public:
+    explicit Alignment(Flock &flock, float radius) : SteeringBehavior{flock}, radius{radius} {};
+private:
+    float radius;
+    sf::Vector2f compute_one_member(FlockMember const& member) override;
 };
 
 #endif // BOIDSFML_STEERINGBEHAVIOR_H

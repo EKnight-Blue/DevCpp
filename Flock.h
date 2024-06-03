@@ -8,7 +8,7 @@ struct FlockMember{
     sf::Vector2f position{0., 0.};
     sf::Vector2f orientation{1., 0.};
     sf::Vector2f force{0, 0};
-    float speed{0.};
+    float speed{100.};
 };
 
 
