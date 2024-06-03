@@ -71,7 +71,7 @@ sf::Vector2f Cohesion::compute_one_member(FlockMember const& member) {
 }
 
 
-sf::Vector2f Separation::compute_one_member(FlockMember const& member) {
+sf::Vector2f Alignment::compute_one_member(FlockMember const& member) {
     sf::Vector2f desired_velocity{0., 0.};
     size_t neighbor_cnt = 0;
     float sq_radius = radius * radius;
@@ -93,7 +93,7 @@ sf::Vector2f Separation::compute_one_member(FlockMember const& member) {
 
 
 
-sf::Vector2f Alignment::compute_one_member(FlockMember const& member) {
+sf::Vector2f Separation::compute_one_member(FlockMember const& member) {
     sf::Vector2f force{0., 0.};
     float sq_radius = radius * radius;
     for (auto const& neighbor : flock.members) {
