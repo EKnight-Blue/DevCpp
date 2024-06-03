@@ -34,7 +34,6 @@ public:
 
 private:
     void set_vertices();
-    friend class SteeringBehavior;
 };
 
 

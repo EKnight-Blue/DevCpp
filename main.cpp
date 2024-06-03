@@ -9,7 +9,7 @@ int main() {
   f.max_speed = 200.f;
   f.max_force = 400.f;
   f.put_on_rectangle(800, 800, 10, 10);
-  Seek seek{f, {600, 400}};
+  Flee seek{f, {600, 400}};
 
   bool running{true};
   sf::Clock c{};

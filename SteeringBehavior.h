@@ -32,4 +32,15 @@ private:
     void compute_one_member(FlockMember& member) override;
 };
 
+
+class Flee final : public SteeringBehavior {
+public:
+    explicit Flee(Flock& flock, sf::Vector2f target) : SteeringBehavior{flock}, target{target} {};
+    ~Flee() override = default;
+private:
+    sf::Vector2f target;
+    void compute_one_member(FlockMember& member) override;
+};
+
+
 #endif //BOIDSFML_STEERINGBEHAVIOR_H

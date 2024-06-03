@@ -18,3 +18,11 @@ void Seek::compute_one_member(FlockMember &member) {
 
     member.force += desired_velocity * (flock.max_speed / old_mag) - member.speed * member.orientation;
 }
+
+void Flee::compute_one_member(FlockMember &member) {
+    sf::Vector2f desired_velocity = member.position - target;
+    float const old_mag = magnitude(desired_velocity);
+    if (old_mag == 0.f) return;
+
+    member.force += desired_velocity * (flock.max_speed / old_mag) - member.speed * member.orientation;
+}
