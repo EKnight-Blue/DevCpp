@@ -19,17 +19,18 @@ int main() {
     while (window.pollEvent(event)) {
       switch (event.type) {
 
-      case sf::Event::KeyPressed: {
+      case sf::Event::KeyPressed:
         switch (event.key.code) {
 
-        case sf::Keyboard::Q: {
+        case sf::Keyboard::Q:
           running = false;
           break;
-        }
+
         default:
           break;
         }
-      }
+        break;
+
       case sf::Event::EventType::Closed:
         running = false;
         break;
