@@ -22,7 +22,9 @@ protected:
 
 private:
   virtual sf::Vector2f compute_one_member(FlockMember &member) = 0;
+    float coefficient{1.};
 };
+
 
 class Seek final : public SteeringBehavior {
 public:
@@ -47,6 +49,8 @@ private:
   float slowdown_distance;
   sf::Vector2f compute_one_member(FlockMember &member) override;
 };
+
+
 
 class Flee final : public SteeringBehavior {
 public:
