@@ -7,10 +7,10 @@ int main() {
   window.setFramerateLimit(30);
   Flock f{100, 800, 800};
   f.max_speed = 200.f;
-  f.max_force = 400.f;
+  f.max_force = 100.f;
   f.put_on_rectangle(800, 800, 10, 10);
-  Flee seek{f, {600, 400}};
-
+//  Arrival seek{f, {600, 400}, 200.};
+  Seek seek{f, {600, 400}};
   bool running{true};
   sf::Clock c{};
   auto date = c.getElapsedTime();

@@ -38,20 +38,23 @@ void Flock::draw(sf::RenderTarget &target) {
     target.draw(triangles, &texture);
 }
 
-void Flock::update(sf::Time delta_time) {
+void Flock::update(sf::Time const delta_time) {
     for (auto& member : members) {
         float force = sqrtf(member.force.x * member.force.x + member.force.y * member.force.y);
-        if (force == 0.f)
+        if (force == 0.f) {
+            member.position += (member.speed) * member.orientation;
+            member.force = {0., 0.};
             continue;
+        }
 
         sf::Vector2f speed;
         if (force > max_force)
-            speed = member.speed * member.orientation + delta_time.asSeconds() * member.force * (max_force / force);
+            speed = member.speed * member.orientation + member.force * (delta_time.asSeconds() * max_force / force);
         else
-            speed = member.speed * member.orientation + delta_time.asSeconds() * member.force;
-
+            speed = member.speed * member.orientation + member.force * delta_time.asSeconds();
+        member.force = {0., 0.};
         member.speed = sqrtf(speed.x * speed.x + speed.y * speed.y);
-        if (member.speed == 0.)
+        if (member.speed == 0.f)
             continue;
 
         member.orientation = speed / member.speed;

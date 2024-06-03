@@ -19,27 +19,35 @@ public:
 protected:
     Flock& flock;
 private:
-    virtual void compute_one_member(FlockMember& member) = 0;
+    virtual sf::Vector2f compute_one_member(FlockMember& member) = 0;
 };
 
 
 class Seek final : public SteeringBehavior {
 public:
     explicit Seek(Flock& flock, sf::Vector2f target) : SteeringBehavior{flock}, target{target} {};
-    ~Seek() override = default;
 private:
     sf::Vector2f target;
-    void compute_one_member(FlockMember& member) override;
+    sf::Vector2f compute_one_member(FlockMember& member) override;
 };
+
+class Arrival final : public SteeringBehavior {
+public:
+    explicit Arrival(Flock& flock, sf::Vector2f target, float slowdown_distance) : SteeringBehavior{flock}, target{target}, slowdown_distance{slowdown_distance} {};
+private:
+    sf::Vector2f target;
+    float slowdown_distance;
+    sf::Vector2f compute_one_member(FlockMember& member) override;
+};
+
 
 
 class Flee final : public SteeringBehavior {
 public:
     explicit Flee(Flock& flock, sf::Vector2f target) : SteeringBehavior{flock}, target{target} {};
-    ~Flee() override = default;
 private:
     sf::Vector2f target;
-    void compute_one_member(FlockMember& member) override;
+    sf::Vector2f compute_one_member(FlockMember& member) override;
 };
 
 
