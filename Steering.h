@@ -12,19 +12,29 @@
  */
 
 
-union SB_Data{
-    struct {
-        float neighbor_detection_range;
-        float neighbor_detection_cos_fov;
+
+union SteeringParameters{
+    struct SeekFlee{
+        sf::Vector2f target;
     };
-    struct {
-        sf::Vector2f static_target{};
-        float proximity_range{};
+    SeekFlee seek_flee;
+
+    struct Arrival{
+        sf::Vector2f target{0., 0.};
+        float range{0.};
     };
+    Arrival arrival;
+
+    struct CohesionAlignmentSeparation{
+        float detection_range;
+        float detection_cos_fov;
+    };
+    CohesionAlignmentSeparation cas;
 };
 
 
-struct Steering{
+class Steering{
+public:
     enum class Behavior{
         Seek,
         Flee,
@@ -34,16 +44,19 @@ struct Steering{
         Separation,
         Count
     };
-    Behavior behavior;
 
+    explicit Steering(Behavior behavior, Flock& flock, SteeringParameters const& data, const float c) : behavior{behavior}, flock{flock}, parameters{data}, coefficient{c} {};
+    void update_values(SteeringParameters const& new_data, float c);
+    void compute();
+
+private:
+    Behavior behavior;
     Flock& flock;
-    SB_Data data;
+    SteeringParameters parameters;
     float coefficient{1.0};
 
-    explicit Steering(Behavior behavior, Flock& flock, SB_Data const& data, const float c) : behavior{behavior}, flock{flock}, data{data}, coefficient{c} {};
-    void update_values(SB_Data const& new_data, float c);
+    [[nodiscard]] inline bool in_fov(FlockMember const& member, sf::Vector2f const& vec, float sq_radius) const;
 
-    void compute();
     using BehaviorMethod = sf::Vector2f (Steering::*)(FlockMember const& member) const;
     [[nodiscard]] sf::Vector2f seek(FlockMember const& member) const;
     [[nodiscard]] sf::Vector2f flee(FlockMember const& member) const;
