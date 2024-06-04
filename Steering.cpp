@@ -85,7 +85,7 @@ sf::Vector2f Steering::alignment(Flock &flock, FlockMember const& member) const 
     for (auto const& neighbor : flock.members) {
         if (&neighbor == &member)
             continue;
-        sf::Vector2f vec = member.position - neighbor.position;
+        sf::Vector2f vec = neighbor.position - member.position;
         if (in_fov(member, vec, sq_radius)) {
             desired_velocity += member.speed * member.orientation;
             ++neighbor_cnt;
@@ -105,10 +105,10 @@ sf::Vector2f Steering::separation(Flock &flock, FlockMember const& member) const
     for (auto const& neighbor : flock.members) {
         if (&neighbor == &member)
             continue;
-        sf::Vector2f vec = member.position - neighbor.position;
+        sf::Vector2f vec = neighbor.position - member.position;
         float sq_mag = sq_magnitude(vec);
         if (0.f < sq_mag && in_fov(member, vec, sq_radius)) {
-            force += vec / sq_mag;
+            force += -vec / sq_mag;
         }
     }
     return parameters.cas.detection_range * force;

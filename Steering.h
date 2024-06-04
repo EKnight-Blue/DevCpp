@@ -50,7 +50,7 @@ public:
     void compute(Flock &flock);
 
 private:
-    Behavior behavior;
+    Behavior const behavior;
     SteeringParameters parameters;
     float coefficient{1.0};
 

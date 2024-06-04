@@ -8,6 +8,8 @@ add_executable(BoidSFML main.cpp
         Flock.cpp
         Steering.h
         Steering.cpp
+        CombinedBehavior.h
+        CombineBehavior.cpp
 )
 
 include(FetchContent)

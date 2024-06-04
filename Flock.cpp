@@ -1,6 +1,8 @@
 #include "Flock.h"
 #include <array>
 #include <cmath>
+#include <iostream>
+
 
 sf::Vector2f operator^(sf::Vector2f const& v1, sf::Vector2f const& v2) {
     // complex product
@@ -21,7 +23,7 @@ Flock::Flock(const size_t nb_members, float w, float h) : triangles{sf::Triangle
     for (int index{0}; index < nb_members; ++index) {
         for (int j{0}; j < 3; ++j) {
             triangles[3 * index + j].texCoords = texture_triangle[j];
-            triangles[3 * index + j].color = sf::Color::Red;
+                triangles[3 * index + j].color = sf::Color::Red;
         }
     }
 }
@@ -82,5 +84,12 @@ void Flock::set_vertices() {
         for (int j{0}; j < 3; ++j) {
             triangles[3 * index + j].position = member_position + (20.f * texture_anchors[j] ^ member_orientation);
         }
+    }
+}
+
+
+void Flock::move(sf::Vector2f v) {
+    for (auto& member : members) {
+        member.position += v;
     }
 }

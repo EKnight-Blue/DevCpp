@@ -8,7 +8,7 @@ struct FlockMember{
     sf::Vector2f position{0., 0.};
     sf::Vector2f orientation{1., 0.};
     sf::Vector2f force{0, 0};
-    float speed{100.};
+    float speed{0.};
 };
 
 
@@ -22,6 +22,7 @@ public:
     void put_on_rectangle(float width, float height, size_t columns, size_t rows);
     void draw(sf::RenderTarget &target);
     void update(sf::Time delta_time);
+    void move(sf::Vector2f v);
 
     sf::VertexArray triangles;
     sf::Texture texture;
