@@ -30,18 +30,18 @@ sf::Vector2f sub_seek(Flock const& flock, FlockMember const& member, sf::Vector2
 }
 
 
-sf::Vector2f Steering::seek(FlockMember const& member) const {
+sf::Vector2f Steering::seek(Flock &flock, FlockMember const& member) const {
     sf::Vector2f desired_velocity = parameters.seek_flee.target - member.position;
     return sub_seek(flock, member, desired_velocity);
 }
 
 
-sf::Vector2f Steering::flee(FlockMember const& member) const {
+sf::Vector2f Steering::flee(Flock &flock, FlockMember const& member) const {
     sf::Vector2f desired_velocity = member.position - parameters.seek_flee.target;
     return sub_seek(flock, member, desired_velocity);
 }
 
-sf::Vector2f Steering::arrival(FlockMember const& member) const {
+sf::Vector2f Steering::arrival(Flock &flock, FlockMember const& member) const {
     sf::Vector2f desired_velocity = parameters.arrival.target - member.position;
     float const old_mag = magnitude(desired_velocity);
     if (old_mag < parameters.arrival.range) {
@@ -58,7 +58,7 @@ inline bool Steering::in_fov(FlockMember const& member, sf::Vector2f const & vec
 }
 
 
-sf::Vector2f Steering::cohesion(FlockMember const& member) const {
+sf::Vector2f Steering::cohesion(Flock &flock, FlockMember const& member) const {
     sf::Vector2f desired_velocity{0., 0.};
     size_t neighbor_cnt = 0;
     float sq_radius = parameters.cas.detection_range * parameters.cas.detection_range;
@@ -78,7 +78,7 @@ sf::Vector2f Steering::cohesion(FlockMember const& member) const {
 }
 
 
-sf::Vector2f Steering::alignment(FlockMember const& member) const {
+sf::Vector2f Steering::alignment(Flock &flock, FlockMember const& member) const {
     sf::Vector2f desired_velocity{0., 0.};
     size_t neighbor_cnt = 0;
     float sq_radius = parameters.cas.detection_range * parameters.cas.detection_range;
@@ -99,7 +99,7 @@ sf::Vector2f Steering::alignment(FlockMember const& member) const {
 }
 
 
-sf::Vector2f Steering::separation(FlockMember const& member) const {
+sf::Vector2f Steering::separation(Flock &flock, FlockMember const& member) const {
     sf::Vector2f force{0., 0.};
     float sq_radius = parameters.cas.detection_range * parameters.cas.detection_range;
     for (auto const& neighbor : flock.members) {
@@ -115,7 +115,7 @@ sf::Vector2f Steering::separation(FlockMember const& member) const {
 }
 
 
-void Steering::compute() {
+void Steering::compute(Flock &flock) {
     static std::array<BehaviorMethod, static_cast<size_t>(Behavior::Count)> behaviors{
         &Steering::seek,
         &Steering::flee,
@@ -127,6 +127,6 @@ void Steering::compute() {
     BehaviorMethod const method = behaviors[static_cast<size_t>(behavior)];
 
     for (auto& member : flock.members) {
-        member.force += coefficient * std::invoke(method, this, member);
+        member.force += coefficient * std::invoke(method, this, flock, member);
     }
 }

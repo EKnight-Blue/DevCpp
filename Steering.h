@@ -45,25 +45,24 @@ public:
         Count
     };
 
-    explicit Steering(Behavior behavior, Flock& flock, SteeringParameters const& data, const float c) : behavior{behavior}, flock{flock}, parameters{data}, coefficient{c} {};
+    explicit Steering(Behavior behavior, SteeringParameters const& data, const float c) : behavior{behavior}, parameters{data}, coefficient{c} {};
     void update_values(SteeringParameters const& new_data, float c);
-    void compute();
+    void compute(Flock &flock);
 
 private:
     Behavior behavior;
-    Flock& flock;
     SteeringParameters parameters;
     float coefficient{1.0};
 
     [[nodiscard]] inline bool in_fov(FlockMember const& member, sf::Vector2f const& vec, float sq_radius) const;
 
-    using BehaviorMethod = sf::Vector2f (Steering::*)(FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f seek(FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f flee(FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f arrival(FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f cohesion(FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f alignment(FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f separation(FlockMember const& member) const;
+    using BehaviorMethod = sf::Vector2f (Steering::*)(Flock &flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f seek(Flock &flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f flee(Flock &flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f arrival(Flock &flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f cohesion(Flock &flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f alignment(Flock &flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f separation(Flock &flock, FlockMember const& member) const;
 };
 
 

@@ -7,10 +7,10 @@ int main() {
     window.setFramerateLimit(30);
     Flock f{100, 800, 800};
     f.max_speed = 200.f;
-    f.max_force = 100.f;
+    f.max_force = 800.f;
     f.put_on_rectangle(800, 800, 10, 10);
 
-    Steering seek{Steering::Behavior::Arrival, f, {.arrival={.target={400., 400.}, .range=900.}}, 4.};
+    Steering seek{Steering::Behavior::Arrival, {.arrival={.target={400., 400.}, .range=200.}}, 20.};
     bool running{true};
     sf::Clock c{};
     auto date = c.getElapsedTime();
@@ -47,7 +47,7 @@ int main() {
         window.clear(sf::Color::White);
 
         auto tmp = c.getElapsedTime();
-        seek.compute();
+        seek.compute(f);
         f.update(tmp - date);
         date = tmp;
         f.draw(window);

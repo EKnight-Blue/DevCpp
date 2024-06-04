@@ -46,8 +46,8 @@ void Flock::update(sf::Time const delta_time) {
     for (auto& member : members) {
         float force = sqrtf(member.force.x * member.force.x + member.force.y * member.force.y);
         if (force == 0.f) {
-            member.position += (member.speed) * member.orientation;
-            member.force = {0., 0.};
+            // speed is unchanged
+            member.position += (delta_time.asSeconds() * member.speed) * member.orientation;
             continue;
         }
 
