@@ -35,10 +35,9 @@ else()
 
     FetchContent_MakeAvailable(sfml)
 endif()
+add_subdirectory(imgui)
 
-
-target_link_libraries(BoidSFML sfml-graphics)
-
+target_link_libraries(BoidSFML sfml-graphics ImGui-SFML::ImGui-SFML)
 add_custom_target(copy-resources ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/resources)
 file(GLOB RESOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/resources/*.*)
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/resources

@@ -1,8 +1,8 @@
+#include "CombinedBehavior.h"
 #include "Flock.h"
 #include "Steering.h"
-#include "CombinedBehavior.h"
+#include "imgui-SFML.h"
 #include <cmath>
-
 int main() {
     sf::RenderWindow window{sf::VideoMode{800, 800}, "Game"};
     window.setFramerateLimit(30);
@@ -17,22 +17,22 @@ int main() {
     f2.put_on_rectangle(400, 200, 10, 10);
     f2.move({0., 200.});
 
-//    Steering seek{Steering::Behavior::Flee, {.seek_flee={.target={400., 400.}}}, 20.};
+    //    Steering seek{Steering::Behavior::Flee, {.seek_flee={.target={400.,
+    //    400.}}}, 20.};
 
     CombinedBehavior cb{};
-    cb.add(
-            Steering::Behavior::Arrival, {.arrival={.target={402., 399.}, .range=3200.}}, 2.
-    );
-    cb.add(
-            Steering::Behavior::Cohesion, {.cas={.detection_range=200, .detection_cos_fov=.3}}, 100.
-    );
-    cb.add(
-            Steering::Behavior::Alignment, {.cas={.detection_range=300, .detection_cos_fov=.5}}, 100.
-    );
-    cb.add(
-            Steering::Behavior::Separation, {.cas={.detection_range=180, .detection_cos_fov=-1}}, 500.
-    );
+    cb.add(Steering::Behavior::Arrival,
+           {.arrival = {.target = {402., 399.}, .range = 3200.}}, 2.);
+    cb.add(Steering::Behavior::Cohesion,
+           {.cas = {.detection_range = 200, .detection_cos_fov = .3}}, 100.);
+    cb.add(Steering::Behavior::Alignment,
+           {.cas = {.detection_range = 300, .detection_cos_fov = .5}}, 100.);
+    cb.add(Steering::Behavior::Separation,
+           {.cas = {.detection_range = 180, .detection_cos_fov = -1}}, 500.);
 
+    Steering steer{Steering::Behavior::Arrival,
+                   {.arrival = {.target = {400., 400.}, .range = 200.}},
+                   20.};
     bool running{true};
     sf::Clock c{};
     auto date = c.getElapsedTime();
@@ -41,29 +41,23 @@ int main() {
         while (window.pollEvent(event)) {
             switch (event.type) {
 
-//      case sf::Event::MouseButtonPressed: {
-//        if (event.mouseButton.button == sf::Mouse::Left) {
-//          sub_seek.met_cible(
-//              sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-//        }
-//      }
-                case sf::Event::KeyPressed:
-                    switch (event.key.code) {
+            case sf::Event::KeyPressed:
+                switch (event.key.code) {
 
-                        case sf::Keyboard::Q:
-                            running = false;
-                            break;
-
-                        default:
-                            break;
-                    }
-                    break;
-
-                case sf::Event::EventType::Closed:
+                case sf::Keyboard::Q:
                     running = false;
                     break;
+
                 default:
                     break;
+                }
+                break;
+
+            case sf::Event::EventType::Closed:
+                running = false;
+                break;
+            default:
+                break;
             }
         }
         window.clear(sf::Color::White);
@@ -78,8 +72,4 @@ int main() {
         f2.draw(window);
         window.display();
     }
-
-    window.close();
-
-    return 0;
 }
