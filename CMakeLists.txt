@@ -6,8 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(BoidSFML main.cpp
         Flock.h
         Flock.cpp
-        SteeringBehavior.h
-        SteeringBehavior.cpp
+        Steering.h
+        Steering.cpp
 )
 
 include(FetchContent)

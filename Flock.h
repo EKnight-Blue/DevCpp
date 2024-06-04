@@ -1,6 +1,6 @@
 
-#ifndef BOIDSFML_FLOCK_H
-#define BOIDSFML_FLOCK_H
+#ifndef DEV_CPP_FLOCK_H
+#define DEV_CPP_FLOCK_H
 #include "SFML/Graphics.hpp"
 
 
@@ -14,7 +14,7 @@ struct FlockMember{
 
 
 sf::Vector2f operator^(sf::Vector2f const& v1, sf::Vector2f const& v2);
-
+float dot(sf::Vector2f const& v1, sf::Vector2f const& v2);
 
 class Flock{
 public:
@@ -37,4 +37,4 @@ private:
 };
 
 
-#endif //BOIDSFML_FLOCK_H
+#endif // DEV_CPP_FLOCK_H

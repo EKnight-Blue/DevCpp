@@ -1,5 +1,5 @@
 #include "Flock.h"
-#include "SteeringBehavior.h"
+#include "Steering.h"
 #include <cmath>
 
 int main() {
@@ -9,8 +9,8 @@ int main() {
   f.max_speed = 200.f;
   f.max_force = 100.f;
   f.put_on_rectangle(800, 800, 10, 10);
-  //  Arrival seek{f, {600, 400}, 200.};
-//  Seek seek{f, {600, 400}};
+  //  Arrival sub_seek{f, {600, 400}, 200.};
+//  Seek sub_seek{f, {600, 400}};
     Separation seek{f, 400.};
   bool running{true};
   sf::Clock c{};
@@ -22,7 +22,7 @@ int main() {
 
 //      case sf::Event::MouseButtonPressed: {
 //        if (event.mouseButton.button == sf::Mouse::Left) {
-//          seek.met_cible(
+//          sub_seek.met_cible(
 //              sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
 //        }
 //      }
