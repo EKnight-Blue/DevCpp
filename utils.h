@@ -6,7 +6,11 @@
 #include "SFML/Graphics.hpp"
 #include <cmath>
 
+// complex product
 sf::Vector2f operator^(sf::Vector2f const& v1, sf::Vector2f const& v2);
+
+// element-to-element product
+sf::Vector2f operator*(sf::Vector2f const& v1, sf::Vector2f const& v2);
 float dot(sf::Vector2f const& v1, sf::Vector2f const& v2);
 float random_float();
 
