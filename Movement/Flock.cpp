@@ -84,7 +84,7 @@ void Flock::set_vertices() {
         sf::Vector2f member_position = members[index].position;
         sf::Vector2f member_orientation = members[index].orientation;
         for (int j{0}; j < 3; ++j) {
-            triangles[3 * index + j].position = member_position + (20.f * texture_anchors[j] ^ member_orientation);
+            triangles[3 * index + j].position = member_position + (10.f * texture_anchors[j] ^ member_orientation);
         }
     }
 }

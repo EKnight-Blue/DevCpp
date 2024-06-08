@@ -30,13 +30,13 @@ int main() {
 
     CombinedBehavior cb{};
     cb.add(Steering::Behavior::Cohesion,
-           {.cas = {.detection_range = 100.f, .detection_cos_fov = .3f}}, 15.f);
+           {.cas = {.detection_range = 25.f, .detection_cos_fov = -.3f}}, 15.f);
     cb.add(Steering::Behavior::Alignment,
-           {.cas = {.detection_range = 150.f, .detection_cos_fov = .5f}}, 10.f);
+           {.cas = {.detection_range = 30.f, .detection_cos_fov = -.2f}}, 15.f);
     cb.add(Steering::Behavior::Separation,
-           {.cas = {.detection_range = 80.f, .detection_cos_fov = -.5f}}, 100.f);
+           {.cas = {.detection_range = 50.f, .detection_cos_fov = -.5f}}, 100.f);
     cb.add(Steering::Behavior::Wander,
-           {.wander = {.sphere_dist = 100.f, .sphere_radius = 90.f, .displacement_amplitude=.5f}}, 12.f);
+           {.wander = {.sphere_dist = 100.f, .sphere_radius = 90.f, .displacement_amplitude=.2f}}, 6.f);
 
     Steering steer{Steering::Behavior::Arrival,
                    {.arrival = {.target = {400., 400.}, .range = 200.}},
