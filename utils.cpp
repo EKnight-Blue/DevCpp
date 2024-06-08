@@ -21,3 +21,10 @@ float random_float() {
     static std::uniform_real_distribution<float> distribution{0.f, 1.f};
     return distribution(engine);
 }
+
+uint8_t random_uint8() {
+    static std::random_device rd;
+    static std::default_random_engine engine(rd());
+    static std::uniform_int_distribution<uint8_t> distribution{0, 255};
+    return distribution(engine);
+}

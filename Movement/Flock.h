@@ -3,6 +3,7 @@
 #define DEV_CPP_FLOCK_H
 #include "SFML/Graphics.hpp"
 
+#pragma region Animals
 
 enum class Animal{
     Squirrel,
@@ -129,6 +130,8 @@ struct FlockMember{
     uint16_t age{0};
     uint8_t state{1};
 };
+#pragma endregion
+
 
 class Flock{
 public:
