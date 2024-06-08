@@ -108,7 +108,7 @@ std::array<uint8_t const, TotalStates> const Flock::frame_number = {
         // Squirrel
         6, 6, 8, 4, 2, 4, 4,
         // Rabbit
-        4, 4, 2, 3,
+        4, 6, 2, 3,
         // Bird
         4, 4, 3,
         // FemaleDeer
@@ -131,7 +131,7 @@ std::array<sf::Vector2f const, static_cast<size_t>(Animal::Count)> const Flock::
       // Rabbit
       {192.f, 0.f},
       // Bird
-      {256.f, 0.f},
+      {256.f, 80.f},
       // FemaleDeer
       {320.f, 0.f},
       // MaleDeer

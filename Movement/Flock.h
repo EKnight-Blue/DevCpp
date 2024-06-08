@@ -6,7 +6,13 @@
 #pragma region Animals
 
 enum class Animal{
+    // Sprites from https://elthen.itch.io/2d-pixel-art-squirrel-sprites
+
     Squirrel,
+
+
+    // Sprites from https://lyaseek.itch.io/miniffanimals
+
     Rabbit,
     Bird,
     FemaleDeer,
@@ -20,92 +26,92 @@ enum class Animal{
 
 enum class Squirrel{
     Idle,
-    LookingAround,
-    Running,
-    Digging, // idk
-    Eating,
-    Hurting,
-    Dying,
+    LookAround,
+    Run,
+    Dig, // idk
+    Eat,
+    Hurt,
+    Die,
     Count
 };
 
 enum class Rabbit{
     Idle,
-    Running,
-    Hurting,
-    Dying,
+    Run,
+    Hurt,
+    Die,
     Count
 };
 
 enum class Bird{
     Idle,
-    Flying,
-    Dying,
+    Fly,
+    Die,
     Count
 };
 
 enum class FemaleDeer{
     Idle,
-    Running,
-    Hopping,
-    Rearing,
-    Hurting,
-    Dying,
+    Run,
+    Jump,
+    Attack,
+    Hurt,
+    Die,
     Count
 };
 
 enum class MaleDeer{
     Idle,
-    Running,
-    Hopping,
-    Rearing,
-    Attacking,
-    Hurting,
-    Dying,
+    Run,
+    Jump,
+    Attack1,
+    Attack2,
+    Hurt,
+    Die,
     Count
 };
 
 enum class Wolf{
     Idle,
-    Running,
-    Hopping,
-    Biting,
-    AirAttacking, // idk
+    Run,
+    Jump,
+    Bite,
+    AirAttack, // idk
     Howling,
-    Hurting,
-    Dying,
+    Hurt,
+    Die,
     Count
 };
 
 enum class Bear{
     Idle,
-    Running,
-    Hopping,
+    Run,
+    Jump,
     PawAttack,
-    Biting,
+    Bite,
     Standing,
-    Hurting,
-    Dying,
+    Hurt,
+    Die,
     Count
 };
 
 enum class Boar{
     Idle,
-    Running,
-    Hopping,
-    Attacking,
-    Hurting,
-    Dying,
+    Run,
+    Jump,
+    Attack,
+    Hurt,
+    Die,
     Count
 };
 
 enum class Fox{
     Idle,
-    Running,
-    Hopping,
-    Attacking,
-    Hurting,
-    Dying,
+    Run,
+    Jump,
+    Attack,
+    Hurt,
+    Die,
     Count
 };
 
@@ -119,6 +125,7 @@ constexpr size_t TotalStates =
     +static_cast<size_t>(Bear::Count)
     +static_cast<size_t>(Boar::Count)
     +static_cast<size_t>(Fox::Count);
+#pragma endregion
 
 
 struct FlockMember{
@@ -130,7 +137,6 @@ struct FlockMember{
     uint16_t age{0};
     uint8_t state{1};
 };
-#pragma endregion
 
 
 class Flock{
