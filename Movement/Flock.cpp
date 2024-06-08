@@ -13,6 +13,8 @@ Flock::Flock(const size_t nb_members, float w, float h) : triangles{sf::Triangle
          {400.0f, 100.0f}
     }};
     for (int index{0}; index < nb_members; ++index) {
+        members[index].last_wander_angle = random_float() * TWO_PI;
+        members[index].orientation = {cosf(members[index].last_wander_angle), sinf(members[index].last_wander_angle)};
         for (int j{0}; j < 3; ++j) {
             triangles[3 * index + j].texCoords = texture_triangle[j];
                 triangles[3 * index + j].color = sf::Color::Red;
@@ -42,6 +44,10 @@ void Flock::update(sf::Time const delta_time) {
         if (force == 0.f) {
             // speed is unchanged
             member.position += (delta_time.asSeconds() * member.speed) * member.orientation;
+            member.position += sf::Vector2f{
+                    world_width * (static_cast<float>(member.position.x < 0.f) - static_cast<float>(member.position.x > world_width)),
+                    world_height * (static_cast<float>(member.position.y < 0.f) - static_cast<float>(member.position.y > world_height))
+            };
             continue;
         }
 

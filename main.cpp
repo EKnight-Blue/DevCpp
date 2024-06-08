@@ -19,22 +19,24 @@ int main() {
     f1.max_force = 800.f;
     f1.put_on_rectangle(400, 200, 10, 10);
 
-    Flock f2{100, 800, 800};
-    f2.max_speed = 200.f;
-    f2.max_force = 800.f;
-    f2.put_on_rectangle(400, 200, 10, 10);
-    f2.move({0., 200.});
+//    Flock f2{100, 800, 800};
+//    f2.max_speed = 200.f;
+//    f2.max_force = 800.f;
+//    f2.put_on_rectangle(400, 200, 10, 10);
+//    f2.move({0., 200.});
 
     //    Steering seek{Steering::Behavior::Flee, {.seek_flee={.target={400.,
     //    400.}}}, 20.};
 
     CombinedBehavior cb{};
     cb.add(Steering::Behavior::Cohesion,
-           {.cas = {.detection_range = 200.f, .detection_cos_fov = .3f}}, 100.f);
+           {.cas = {.detection_range = 100.f, .detection_cos_fov = .3f}}, 15.f);
     cb.add(Steering::Behavior::Alignment,
-           {.cas = {.detection_range = 300.f, .detection_cos_fov = .5f}}, 100.f);
+           {.cas = {.detection_range = 150.f, .detection_cos_fov = .5f}}, 10.f);
     cb.add(Steering::Behavior::Separation,
-           {.cas = {.detection_range = 180.f, .detection_cos_fov = -1.f}}, 500.f);
+           {.cas = {.detection_range = 80.f, .detection_cos_fov = -.5f}}, 100.f);
+    cb.add(Steering::Behavior::Wander,
+           {.wander = {.sphere_dist = 100.f, .sphere_radius = 90.f, .displacement_amplitude=.5f}}, 12.f);
 
     Steering steer{Steering::Behavior::Arrival,
                    {.arrival = {.target = {400., 400.}, .range = 200.}},
@@ -143,13 +145,13 @@ int main() {
         ImGui::ShowDemoWindow();
         auto tmp = c.getElapsedTime();
         cb.compute(f1);
-        cb.compute(f2);
+//        cb.compute(f2);
         f1.update(dt);
-        f2.update(dt);
+//        f2.update(dt);
         //-_-_-_-_-__-_-_-_-_-_-_-_--_-_DESSSIN
         window.draw(background);
         f1.draw(window);
-        f2.draw(window);
+//        f2.draw(window);
         ImGui::SFML::Render(window);
         window.display();
     }

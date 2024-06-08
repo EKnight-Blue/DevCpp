@@ -29,6 +29,13 @@ union SteeringParameters{
         float detection_cos_fov;
     };
     CohesionAlignmentSeparation cas;
+
+    struct Wander{
+        float sphere_dist;
+        float sphere_radius;
+        float displacement_amplitude;
+    };
+    Wander wander;
 };
 
 
@@ -41,6 +48,7 @@ public:
         Cohesion,
         Alignment,
         Separation,
+        Wander,
         Count
     };
 
@@ -55,13 +63,14 @@ private:
 
     [[nodiscard]] inline bool in_fov(FlockMember const& member, sf::Vector2f const& vec, float sq_radius) const;
 
-    using BehaviorMethod = sf::Vector2f (Steering::*)(Flock const& flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f seek(Flock const& flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f flee(Flock const& flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f arrival(Flock const& flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f cohesion(Flock const& flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f alignment(Flock const& flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f separation(Flock const& flock, FlockMember const& member) const;
+    using BehaviorMethod = sf::Vector2f (Steering::*)(Flock const& flock, FlockMember& member) const;
+    [[nodiscard]] sf::Vector2f seek(Flock const& flock, FlockMember &member) const;
+    [[nodiscard]] sf::Vector2f flee(Flock const& flock, FlockMember &member) const;
+    [[nodiscard]] sf::Vector2f arrival(Flock const& flock, FlockMember &member) const;
+    [[nodiscard]] sf::Vector2f cohesion(Flock const& flock, FlockMember &member) const;
+    [[nodiscard]] sf::Vector2f alignment(Flock const& flock, FlockMember &member) const;
+    [[nodiscard]] sf::Vector2f separation(Flock const& flock, FlockMember &member) const;
+    [[nodiscard]] sf::Vector2f wander(Flock const& flock, FlockMember &member) const;
 };
 
 
