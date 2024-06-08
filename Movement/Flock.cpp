@@ -83,7 +83,7 @@ void Flock::set_vertices() {
         float state{static_cast<float>(members[index].state)};
         float age{static_cast<float>(members[index].age / ANIMATION_FRAME_TIME_MS)};
         for (int j{0}; j < 4; ++j) {
-            triangles[4 * index + j].position = member_position + size * (sf::Vector2f{-.5f, -1.f} + texture_anchors[j]);
+            triangles[4 * index + j].position = member_position + size * (sf::Vector2f{-.5f, -1.f} + texture_anchors[j]) * sf::Vector2f{1.f - 2.f * static_cast<float>(members[index].orientation.x < 0.), 1.f};
             triangles[4 * index + j].texCoords = anchor[static_cast<size_t>(animal)] + (sf::Vector2f{age, state} + texture_anchors[j]) * frame_size[static_cast<size_t>(animal)];
         }
     }
