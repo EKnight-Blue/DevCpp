@@ -10,7 +10,10 @@ add_executable(BoidSFML main.cpp
         Movement/Steering.cpp
         Movement/CombinedBehavior.h
         Movement/CombineBehavior.cpp
+        utils.h
+        utils.cpp
 )
+target_include_directories(BoidSFML PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
 include(FetchContent)
 

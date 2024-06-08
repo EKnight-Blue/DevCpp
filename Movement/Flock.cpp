@@ -1,17 +1,9 @@
 #include "Flock.h"
+#include "utils.h"
 #include <array>
 #include <cmath>
 #include <iostream>
 
-
-sf::Vector2f operator^(sf::Vector2f const& v1, sf::Vector2f const& v2) {
-    // complex product
-    return {v1.x * v2.x - v1.y * v2.y, v1.x * v2.y + v1.y * v2.x};
-}
-
-float dot(sf::Vector2f const& v1, sf::Vector2f const& v2) {
-    return v1.x * v2.x + v1.y * v2.y;
-}
 
 Flock::Flock(const size_t nb_members, float w, float h) : triangles{sf::Triangles, 3 * nb_members}, members(nb_members), world_width{w}, world_height{h} {
     texture.loadFromFile("./resources/texture.png");

@@ -2,6 +2,7 @@
 #include <cmath>
 #include <array>
 #include <functional>
+#include "utils.h"
 
 
 inline float magnitude(sf::Vector2f const& v) {

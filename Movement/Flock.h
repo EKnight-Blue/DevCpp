@@ -11,11 +11,6 @@ struct FlockMember{
     float speed{0.};
 };
 
-
-
-sf::Vector2f operator^(sf::Vector2f const& v1, sf::Vector2f const& v2);
-float dot(sf::Vector2f const& v1, sf::Vector2f const& v2);
-
 class Flock{
 public:
     explicit Flock(size_t nb_members, float w, float h);
