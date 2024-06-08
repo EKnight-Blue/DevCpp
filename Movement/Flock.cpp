@@ -68,6 +68,10 @@ void Flock::update(sf::Time const delta_time) {
             member.speed = max_speed;
 
         member.position += (delta_time.asSeconds() * member.speed) * member.orientation;
+        member.position += sf::Vector2f{
+            world_width * (static_cast<float>(member.position.x < 0.f) - static_cast<float>(member.position.x > world_width)),
+            world_height * (static_cast<float>(member.position.y < 0.f) - static_cast<float>(member.position.y > world_height))
+        };
     }
 }
 
@@ -92,4 +96,12 @@ void Flock::move(sf::Vector2f v) {
     for (auto& member : members) {
         member.position += v;
     }
+}
+
+sf::Vector2f Flock::difference(const sf::Vector2f &v1, const sf::Vector2f &v2) const {
+    sf::Vector2f v = v1 - v2;
+    return v + sf::Vector2f{
+        world_width * (static_cast<float>(v.x < -world_width * .5f) - static_cast<float>(v.x > world_width * .5f)),
+        world_height * (static_cast<float>(v.y < -world_height * .5f) - static_cast<float>(v.y > world_height * .5f))
+    };
 }

@@ -1,6 +1,6 @@
-#include "CombinedBehavior.h"
-#include "Flock.h"
-#include "Steering.h"
+#include "Movement/CombinedBehavior.h"
+#include "Movement/Flock.h"
+#include "Movement/Steering.h"
 #include "imgui-SFML.h"
 #include "imgui.h"
 #include <SFML/System/Clock.hpp>
@@ -29,14 +29,12 @@ int main() {
     //    400.}}}, 20.};
 
     CombinedBehavior cb{};
-    cb.add(Steering::Behavior::Arrival,
-           {.arrival = {.target = {402., 399.}, .range = 3200.}}, 2.);
     cb.add(Steering::Behavior::Cohesion,
-           {.cas = {.detection_range = 200, .detection_cos_fov = .3}}, 100.);
+           {.cas = {.detection_range = 200.f, .detection_cos_fov = .3f}}, 100.f);
     cb.add(Steering::Behavior::Alignment,
-           {.cas = {.detection_range = 300, .detection_cos_fov = .5}}, 100.);
+           {.cas = {.detection_range = 300.f, .detection_cos_fov = .5f}}, 100.f);
     cb.add(Steering::Behavior::Separation,
-           {.cas = {.detection_range = 180, .detection_cos_fov = -1}}, 500.);
+           {.cas = {.detection_range = 180.f, .detection_cos_fov = -1.f}}, 500.f);
 
     Steering steer{Steering::Behavior::Arrival,
                    {.arrival = {.target = {400., 400.}, .range = 200.}},
@@ -92,6 +90,7 @@ int main() {
                     break;
                 }
             case sf::Event::MouseMoved:
+
                 if (translation) {
                     const sf::Vector2f position_nouvelle_souris_monde =
                         window.mapPixelToCoords(sf::Mouse::getPosition(window));

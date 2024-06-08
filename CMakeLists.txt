@@ -4,12 +4,12 @@ project(BoidSFML)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(BoidSFML main.cpp
-        Flock.h
-        Flock.cpp
-        Steering.h
-        Steering.cpp
-        CombinedBehavior.h
-        CombineBehavior.cpp
+        Movement/Flock.h
+        Movement/Flock.cpp
+        Movement/Steering.h
+        Movement/Steering.cpp
+        Movement/CombinedBehavior.h
+        Movement/CombineBehavior.cpp
 )
 
 include(FetchContent)

@@ -30,6 +30,8 @@ public:
 
     float const world_width;
     float const world_height;
+    sf::Vector2f difference(sf::Vector2f const& v1, sf::Vector2f const & v2) const;
+
     float max_speed{0.f};
     float max_force{0.f};
 

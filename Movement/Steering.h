@@ -12,7 +12,6 @@
  */
 
 
-
 union SteeringParameters{
     struct SeekFlee{
         sf::Vector2f target;
@@ -56,13 +55,13 @@ private:
 
     [[nodiscard]] inline bool in_fov(FlockMember const& member, sf::Vector2f const& vec, float sq_radius) const;
 
-    using BehaviorMethod = sf::Vector2f (Steering::*)(Flock &flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f seek(Flock &flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f flee(Flock &flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f arrival(Flock &flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f cohesion(Flock &flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f alignment(Flock &flock, FlockMember const& member) const;
-    [[nodiscard]] sf::Vector2f separation(Flock &flock, FlockMember const& member) const;
+    using BehaviorMethod = sf::Vector2f (Steering::*)(Flock const& flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f seek(Flock const& flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f flee(Flock const& flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f arrival(Flock const& flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f cohesion(Flock const& flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f alignment(Flock const& flock, FlockMember const& member) const;
+    [[nodiscard]] sf::Vector2f separation(Flock const& flock, FlockMember const& member) const;
 };
 
 
