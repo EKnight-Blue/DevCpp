@@ -2,9 +2,9 @@
 #ifndef DEV_CPP_FLOCK_H
 #define DEV_CPP_FLOCK_H
 #include "SFML/Graphics.hpp"
-
-
-enum class Animal{
+#include "interface.h"
+#include <vector>
+enum class Animal {
     Squirrel,
     Rabbit,
     Bird,
@@ -17,7 +17,7 @@ enum class Animal{
     Count
 };
 
-enum class Squirrel{
+enum class Squirrel {
     Idle,
     LookingAround,
     Running,
@@ -28,22 +28,11 @@ enum class Squirrel{
     Count
 };
 
-enum class Rabbit{
-    Idle,
-    Running,
-    Hurting,
-    Dying,
-    Count
-};
+enum class Rabbit { Idle, Running, Hurting, Dying, Count };
 
-enum class Bird{
-    Idle,
-    Flying,
-    Dying,
-    Count
-};
+enum class Bird { Idle, Flying, Dying, Count };
 
-enum class FemaleDeer{
+enum class FemaleDeer {
     Idle,
     Running,
     Hopping,
@@ -53,7 +42,7 @@ enum class FemaleDeer{
     Count
 };
 
-enum class MaleDeer{
+enum class MaleDeer {
     Idle,
     Running,
     Hopping,
@@ -64,7 +53,7 @@ enum class MaleDeer{
     Count
 };
 
-enum class Wolf{
+enum class Wolf {
     Idle,
     Running,
     Hopping,
@@ -76,7 +65,7 @@ enum class Wolf{
     Count
 };
 
-enum class Bear{
+enum class Bear {
     Idle,
     Running,
     Hopping,
@@ -88,39 +77,18 @@ enum class Bear{
     Count
 };
 
-enum class Boar{
-    Idle,
-    Running,
-    Hopping,
-    Attacking,
-    Hurting,
-    Dying,
-    Count
-};
+enum class Boar { Idle, Running, Hopping, Attacking, Hurting, Dying, Count };
 
-enum class Fox{
-    Idle,
-    Running,
-    Hopping,
-    Attacking,
-    Hurting,
-    Dying,
-    Count
-};
+enum class Fox { Idle, Running, Hopping, Attacking, Hurting, Dying, Count };
 
 constexpr size_t TotalStates =
-     static_cast<size_t>(Squirrel::Count)
-    +static_cast<size_t>(Rabbit::Count)
-    +static_cast<size_t>(Bird::Count)
-    +static_cast<size_t>(FemaleDeer::Count)
-    +static_cast<size_t>(MaleDeer::Count)
-    +static_cast<size_t>(Wolf::Count)
-    +static_cast<size_t>(Bear::Count)
-    +static_cast<size_t>(Boar::Count)
-    +static_cast<size_t>(Fox::Count);
+    static_cast<size_t>(Squirrel::Count) + static_cast<size_t>(Rabbit::Count) +
+    static_cast<size_t>(Bird::Count) + static_cast<size_t>(FemaleDeer::Count) +
+    static_cast<size_t>(MaleDeer::Count) + static_cast<size_t>(Wolf::Count) +
+    static_cast<size_t>(Bear::Count) + static_cast<size_t>(Boar::Count) +
+    static_cast<size_t>(Fox::Count);
 
-
-struct FlockMember{
+struct FlockMember {
     sf::Vector2f position{0., 0.};
     sf::Vector2f orientation{1., 0.};
     sf::Vector2f force{0, 0};
@@ -130,10 +98,14 @@ struct FlockMember{
     uint8_t state{1};
 };
 
-class Flock{
-public:
-    explicit Flock(Animal animal, float size, size_t nb_members, float w, float h);
-    void put_on_rectangle(float width, float height, size_t columns, size_t rows);
+class Flock {
+  public:
+    explicit Flock(Animal animal, float size, size_t nb_members, float w,
+                   float h);
+    explicit Flock(Animal animal, float size, size_t nb_members, float w,
+                   float h, Ihm &interface);
+    void put_on_rectangle(float width, float height, size_t columns,
+                          size_t rows);
     void draw(sf::RenderTarget &target);
     void update(sf::Time delta_time);
     void move(sf::Vector2f v);
@@ -146,19 +118,26 @@ public:
 
     float const world_width;
     float const world_height;
-    sf::Vector2f difference(sf::Vector2f const& v1, sf::Vector2f const & v2) const;
+    sf::Vector2f difference(sf::Vector2f const &v1,
+                            sf::Vector2f const &v2) const;
 
     float max_speed{0.f};
     float max_force{0.f};
 
-private:
+  private:
     void set_vertices();
 
     static std::array<uint8_t const, TotalStates> const frame_number;
-    static std::array<sf::Vector2f const, static_cast<size_t>(Animal::Count)> const anchor;
-    static std::array<sf::Vector2f const, static_cast<size_t>(Animal::Count)> const frame_size;
-    static std::array<uint8_t, static_cast<size_t>(Animal::Count)> const accumulated_state_counts;
-};
+    static std::array<sf::Vector2f const,
+                      static_cast<size_t>(Animal::Count)> const anchor;
+    static std::array<sf::Vector2f const,
+                      static_cast<size_t>(Animal::Count)> const frame_size;
+    static std::array<uint8_t, static_cast<size_t>(Animal::Count)> const
+        accumulated_state_counts;
 
+    // non utilisé pour l'instant
+    std::vector<int *> abonnements;
+    bool *toroïdal;
+};
 
 #endif // DEV_CPP_FLOCK_H

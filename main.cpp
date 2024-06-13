@@ -1,11 +1,8 @@
 #include "Movement/CombinedBehavior.h"
 #include "Movement/Flock.h"
 #include "Movement/Steering.h"
-#include "imgui-SFML.h"
-#include "imgui.h"
 #include <SFML/System/Clock.hpp>
 #include <cmath>
-#include <iostream>
 int main() {
     sf::Texture texture;
     texture.loadFromFile("./resources/bg.jpg");
@@ -13,17 +10,17 @@ int main() {
     sf::RenderWindow window{sf::VideoMode{800, 800}, "Game"};
     sf::View vue = window.getDefaultView();
     window.setFramerateLimit(30);
-    ImGui::SFML::Init(window);
-    Flock f1{Animal::Bird, 20.f, 100, 800, 800};
+    Ihm test{&window};
+    Flock f1{Animal::Bird, 20.f, 100, 800, 800, test};
     f1.max_speed = 200.f;
     f1.max_force = 800.f;
     f1.put_on_rectangle(400, 200, 10, 10);
 
-//    Flock f2{100, 800, 800};
-//    f2.max_speed = 200.f;
-//    f2.max_force = 800.f;
-//    f2.put_on_rectangle(400, 200, 10, 10);
-//    f2.move({0., 200.});
+    //    Flock f2{100, 800, 800};
+    //    f2.max_speed = 200.f;
+    //    f2.max_force = 800.f;
+    //    f2.put_on_rectangle(400, 200, 10, 10);
+    //    f2.move({0., 200.});
 
     //    Steering seek{Steering::Behavior::Flee, {.seek_flee={.target={400.,
     //    400.}}}, 20.};
@@ -34,9 +31,13 @@ int main() {
     cb.add(Steering::Behavior::Alignment,
            {.cas = {.detection_range = 30.f, .detection_cos_fov = -.2f}}, 15.f);
     cb.add(Steering::Behavior::Separation,
-           {.cas = {.detection_range = 50.f, .detection_cos_fov = -.5f}}, 100.f);
+           {.cas = {.detection_range = 50.f, .detection_cos_fov = -.5f}},
+           100.f);
     cb.add(Steering::Behavior::Wander,
-           {.wander = {.sphere_dist = 100.f, .sphere_radius = 90.f, .displacement_amplitude=.2f}}, 6.f);
+           {.wander = {.sphere_dist = 100.f,
+                       .sphere_radius = 90.f,
+                       .displacement_amplitude = .2f}},
+           6.f);
 
     Steering steer{Steering::Behavior::Arrival,
                    {.arrival = {.target = {400., 400.}, .range = 200.}},
@@ -51,7 +52,7 @@ int main() {
     while (window.isOpen()) {
         sf::Event event{};
         while (window.pollEvent(event)) {
-            ImGui::SFML::ProcessEvent(event);
+            test.évènements_ihm(event);
             switch (event.type) {
             case sf::Event::MouseButtonPressed:
                 switch (event.mouseButton.button) {
@@ -141,18 +142,16 @@ int main() {
         }
         window.clear(sf::Color::White);
         dt = c.restart();
-        ImGui::SFML::Update(window, dt);
-        ImGui::ShowDemoWindow();
         auto tmp = c.getElapsedTime();
         cb.compute(f1);
-//        cb.compute(f2);
+        //        cb.compute(f2);
         f1.update(dt);
-//        f2.update(dt);
+        //        f2.update(dt);
         //-_-_-_-_-__-_-_-_-_-_-_-_--_-_DESSSIN
         window.draw(background);
         f1.draw(window);
-//        f2.draw(window);
-        ImGui::SFML::Render(window);
+        //        f2.draw(window);
+        test.affichage_ihm();
         window.display();
     }
 }

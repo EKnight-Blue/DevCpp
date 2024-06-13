@@ -12,6 +12,8 @@ add_executable(BoidSFML main.cpp
         Movement/CombineBehavior.cpp
         utils.h
         utils.cpp
+        interface.h
+        interface.cpp
 )
 target_include_directories(BoidSFML PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
