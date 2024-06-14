@@ -6,14 +6,14 @@
 
 constexpr uint16_t ANIMATION_FRAME_TIME_MS = 100;
 
-Flock::Flock(Animal const animal, const float size, const size_t nb_members, float w, float h) : animal{animal}, size{size}, triangles{sf::Quads, 4 * nb_members}, members(nb_members), world_width{w}, world_height{h} {
+Flock::Flock(Animal const animal, const float size, const size_t nb_members, float w, float h) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members), world_width{w}, world_height{h} {
     texture.loadFromFile("./resources/texture.png");
 
     for (int index{0}; index < nb_members; ++index) {
         members[index].last_wander_angle = random_float() * TWO_PI;
         members[index].orientation = {cosf(members[index].last_wander_angle), sinf(members[index].last_wander_angle)};
         for (int j{0}; j < 4; ++j) {
-            triangles[4 * index + j].color = sf::Color::White;
+            vertex_array[4 * index + j].color = sf::Color::White;
         }
     }
 }
@@ -31,7 +31,7 @@ void Flock::put_on_rectangle(float const width, float const height, const size_t
 
 void Flock::draw(sf::RenderTarget &target) {
     set_vertices();
-    target.draw(triangles, &texture);
+    target.draw(vertex_array, &texture);
 }
 
 void Flock::update(sf::Time const delta_time) {
@@ -83,8 +83,8 @@ void Flock::set_vertices() {
         float state{static_cast<float>(members[index].state)};
         float age{static_cast<float>(members[index].age / ANIMATION_FRAME_TIME_MS)};
         for (int j{0}; j < 4; ++j) {
-            triangles[4 * index + j].position = member_position + size * (sf::Vector2f{-.5f, -1.f} + texture_anchors[j]) * sf::Vector2f{1.f - 2.f * static_cast<float>(members[index].orientation.x < 0.), 1.f};
-            triangles[4 * index + j].texCoords = anchor[static_cast<size_t>(animal)] + (sf::Vector2f{age, state} + texture_anchors[j]) * frame_size[static_cast<size_t>(animal)];
+            vertex_array[4 * index + j].position = member_position + size * (sf::Vector2f{-.5f, -1.f} + texture_anchors[j]) * sf::Vector2f{1.f - 2.f * static_cast<float>(members[index].orientation.x < 0.), 1.f};
+            vertex_array[4 * index + j].texCoords = anchor[static_cast<size_t>(animal)] + (sf::Vector2f{age, state} + texture_anchors[j]) * frame_size[static_cast<size_t>(animal)];
         }
     }
 }

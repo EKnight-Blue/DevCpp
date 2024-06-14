@@ -149,7 +149,7 @@ public:
 
     Animal animal;
     float size;
-    sf::VertexArray triangles;
+    sf::VertexArray vertex_array;
     sf::Texture texture;
     std::vector<FlockMember> members;
 
