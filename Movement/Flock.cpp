@@ -11,11 +11,26 @@ Flock::Flock(Animal const animal, const float size, const size_t nb_members, flo
 
     for (int index{0}; index < nb_members; ++index) {
         members[index].last_wander_angle = random_float() * TWO_PI;
+        members[index].orientation = {cosf(members[index].last_wander_angle),
+                                      sinf(members[index].last_wander_angle)};
+        for (int j{0}; j < 4; ++j) {
+            vertex_array[4 * index + j].color = sf::Color::White;
+        }
+    }
+}
+
+Flock::Flock(Animal const animal, const float size, const size_t nb_members, float w, float h, Ihm &interface) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members), world_width{w}, world_height{h}, abonnements(NB_SUJETS) {
+    texture.loadFromFile("./resources/texture.png");
+
+    for (int index{0}; index < nb_members; ++index) {
+        members[index].last_wander_angle = random_float() * TWO_PI;
         members[index].orientation = {cosf(members[index].last_wander_angle), sinf(members[index].last_wander_angle)};
         for (int j{0}; j < 4; ++j) {
             vertex_array[4 * index + j].color = sf::Color::White;
         }
     }
+    // abonnement aux boutons de l'interface
+    toroïdal = static_cast<bool *>(interface.abonnement(BOOL_TOR));
 }
 
 void Flock::put_on_rectangle(float const width, float const height, const size_t columns, const size_t rows) {
@@ -62,11 +77,16 @@ void Flock::update(sf::Time const delta_time) {
         if (member.speed > max_speed)
             member.speed = max_speed;
 
-        member.position += (delta_time.asSeconds() * member.speed) * member.orientation;
-        member.position += sf::Vector2f{
-            world_width * (static_cast<float>(member.position.x < 0.f) - static_cast<float>(member.position.x > world_width)),
-            world_height * (static_cast<float>(member.position.y < 0.f) - static_cast<float>(member.position.y > world_height))
-        };
+        member.position +=
+            (delta_time.asSeconds() * member.speed) * member.orientation;
+
+        // toroidage
+        if (*toroïdal) {
+            member.position += sf::Vector2f{
+                world_width * (static_cast<float>(member.position.x < 0.f) - static_cast<float>(member.position.x > world_width)),
+                world_height * (static_cast<float>(member.position.y < 0.f) - static_cast<float>(member.position.y > world_height))
+            };
+        }
     }
 }
 

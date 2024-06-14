@@ -8,6 +8,9 @@
 enum class Animal{
     // Sprites from https://elthen.itch.io/2d-pixel-art-squirrel-sprites
 
+#include "interface.h"
+#include <vector>
+enum class Animal {
     Squirrel,
 
 
@@ -138,10 +141,10 @@ struct FlockMember{
     uint8_t state{1};
 };
 
-
-class Flock{
-public:
+class Flock {
+  public:
     explicit Flock(Animal animal, float size, size_t nb_members, float w, float h);
+    explicit Flock(Animal animal, float size, size_t nb_members, float w, float h, Ihm &interface);
     void put_on_rectangle(float width, float height, size_t columns, size_t rows);
     void draw(sf::RenderTarget &target);
     void update(sf::Time delta_time);
@@ -169,5 +172,9 @@ private:
     static std::array<uint8_t, static_cast<size_t>(Animal::Count)> const accumulated_state_counts;
 };
 
+    // non utilisé pour l'instant
+    std::vector<int *> abonnements;
+    bool *toroïdal;
+};
 
 #endif // DEV_CPP_FLOCK_H

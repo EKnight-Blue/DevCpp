@@ -28,3 +28,16 @@ uint8_t random_uint8() {
     static std::uniform_int_distribution<uint8_t> distribution{0, 255};
     return distribution(engine);
 }
+
+size_t random_size() {
+    static std::random_device rd;
+    static std::default_random_engine engine(rd());
+    static std::uniform_int_distribution<size_t> distribution{0, 255};
+    return distribution(engine);
+}
+
+
+
+//std::size_t constexpr pows(std::size_t base, std::size_t power) {
+//    if constexpr (power == 0) return 1;
+//}
