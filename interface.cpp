@@ -17,7 +17,7 @@ void Ihm::évènements_ihm(sf::Event évènements) {
 }
 void Ihm::contenu() {
     // ImGui::ShowDemoWindow();
-    ImGui::Begin("8====> 0:");
+    ImGui::Begin("Menu");
     // static bool check = true;
     ImGui::Checkbox("monde toroïdal", reinterpret_cast<bool *>(
                                           this->abonnements[BOOL_TOR].get()));

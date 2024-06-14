@@ -3,6 +3,8 @@
 #include "Movement/Steering.h"
 #include <SFML/System/Clock.hpp>
 #include <cmath>
+#include "interface.h"
+
 int main() {
     sf::Texture texture;
     texture.loadFromFile("./resources/bg.jpg");

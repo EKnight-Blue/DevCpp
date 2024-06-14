@@ -14,6 +14,7 @@ add_executable(BoidSFML main.cpp
         utils.cpp
         interface.h
         interface.cpp
+        interface.cpp
 )
 target_include_directories(BoidSFML PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 

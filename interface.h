@@ -1,3 +1,6 @@
+#ifndef DEV_CPP_INTERFACE_H
+#define DEV_CPP_INTERFACE_H
+
 #include "SFML/Graphics.hpp"
 #include "imgui-SFML.h"
 #include "imgui.h"
@@ -17,3 +20,5 @@ class Ihm {
     void contenu();
     std::vector<std::unique_ptr<int>> abonnements;
 };
+
+#endif // DEV_CPP_INTERFACE_H

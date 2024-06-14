@@ -4,13 +4,11 @@
 #include "SFML/Graphics.hpp"
 
 #pragma region Animals
-
-enum class Animal{
-    // Sprites from https://elthen.itch.io/2d-pixel-art-squirrel-sprites
-
 #include "interface.h"
 #include <vector>
+
 enum class Animal {
+        // Sprites from https://elthen.itch.io/2d-pixel-art-squirrel-sprites
     Squirrel,
 
 
@@ -170,7 +168,6 @@ private:
     static std::array<sf::Vector2f const, static_cast<size_t>(Animal::Count)> const anchor;
     static std::array<sf::Vector2f const, static_cast<size_t>(Animal::Count)> const frame_size;
     static std::array<uint8_t, static_cast<size_t>(Animal::Count)> const accumulated_state_counts;
-};
 
     // non utilisé pour l'instant
     std::vector<int *> abonnements;
