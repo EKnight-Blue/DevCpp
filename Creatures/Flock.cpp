@@ -1,25 +1,24 @@
 #include "Flock.h"
 #include "utils.h"
-#include <array>
-#include <cmath>
-#include <iostream>
 
 constexpr uint16_t ANIMATION_FRAME_TIME_MS = 100;
 
-Flock::Flock(Animal const animal, const float size, const size_t nb_members, float w, float h) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members), world_width{w}, world_height{h} {
+Flock::Flock(Animal const animal, const float size, const size_t nb_members, float w, float h) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members) {
     texture.loadFromFile("./resources/texture.png");
 
     for (int index{0}; index < nb_members; ++index) {
         members[index].last_wander_angle = random_float() * TWO_PI;
-        members[index].orientation = {cosf(members[index].last_wander_angle),
-                                      sinf(members[index].last_wander_angle)};
+        members[index].orientation = {
+            cosf(members[index].last_wander_angle),
+            sinf(members[index].last_wander_angle)
+        };
         for (int j{0}; j < 4; ++j) {
             vertex_array[4 * index + j].color = sf::Color::White;
         }
     }
 }
 
-Flock::Flock(Animal const animal, const float size, const size_t nb_members, float w, float h, Ihm &interface) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members), world_width{w}, world_height{h}, abonnements(NB_SUJETS) {
+Flock::Flock(Animal const animal, const float size, const size_t nb_members, float w, float h, Ihm &interface) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members), abonnements(NB_SUJETS) {
     texture.loadFromFile("./resources/texture.png");
 
     for (int index{0}; index < nb_members; ++index) {
@@ -52,41 +51,18 @@ void Flock::draw(sf::RenderTarget &target) {
 void Flock::update(sf::Time const delta_time) {
     for (auto& member : members) {
         member.age = (member.age + static_cast<uint16_t>(delta_time.asMilliseconds())) % (frame_number[accumulated_state_counts[static_cast<size_t>(animal)] + member.state] * ANIMATION_FRAME_TIME_MS);
-        float force = sqrtf(member.force.x * member.force.x + member.force.y * member.force.y);
-        if (force == 0.f) {
-            // speed is unchanged
-            member.position += (delta_time.asSeconds() * member.speed) * member.orientation;
-            member.position += sf::Vector2f{
-                    world_width * (static_cast<float>(member.position.x < 0.f) - static_cast<float>(member.position.x > world_width)),
-                    world_height * (static_cast<float>(member.position.y < 0.f) - static_cast<float>(member.position.y > world_height))
-            };
-            continue;
-        }
+        truncate(member.force, max_force);
 
-        sf::Vector2f speed;
-        if (force > max_force)
-            speed = member.speed * member.orientation + member.force * (delta_time.asSeconds() * max_force / force);
-        else
-            speed = member.speed * member.orientation + member.force * delta_time.asSeconds();
+        sf::Vector2f speed{member.speed * member.orientation + delta_time.asSeconds() * member.force};
         member.force = {0., 0.};
-        member.speed = sqrtf(speed.x * speed.x + speed.y * speed.y);
-        if (member.speed == 0.f)
-            continue;
 
-        member.orientation = speed / member.speed;
+        member.speed = sqrtf(speed.x * speed.x + speed.y * speed.y);
+        if (member.speed != 0.f)
+            member.orientation = speed / member.speed;
         if (member.speed > max_speed)
             member.speed = max_speed;
 
-        member.position +=
-            (delta_time.asSeconds() * member.speed) * member.orientation;
-
-        // toroidage
-        if (*toroïdal) {
-            member.position += sf::Vector2f{
-                world_width * (static_cast<float>(member.position.x < 0.f) - static_cast<float>(member.position.x > world_width)),
-                world_height * (static_cast<float>(member.position.y < 0.f) - static_cast<float>(member.position.y > world_height))
-            };
-        }
+        member.position += (delta_time.asSeconds() * member.speed) * member.orientation;
     }
 }
 
@@ -116,13 +92,7 @@ void Flock::move(sf::Vector2f v) {
     }
 }
 
-sf::Vector2f Flock::difference(const sf::Vector2f &v1, const sf::Vector2f &v2) const {
-    sf::Vector2f v = v1 - v2;
-    return v + sf::Vector2f{
-        world_width * (static_cast<float>(v.x < -world_width * .5f) - static_cast<float>(v.x > world_width * .5f)),
-        world_height * (static_cast<float>(v.y < -world_height * .5f) - static_cast<float>(v.y > world_height * .5f))
-    };
-}
+
 
 std::array<uint8_t const, TotalStates> const Flock::frame_number = {
         // Squirrel

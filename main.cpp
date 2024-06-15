@@ -1,8 +1,9 @@
-#include "Movement/CombinedBehavior.h"
-#include "Movement/Flock.h"
-#include "Movement/Steering.h"
+#include "Behavior/CombinedBehavior.h"
+#include "Creatures/Flock.h"
+#include "Behavior/AtomicBehavior.h"
 #include <SFML/System/Clock.hpp>
 #include <cmath>
+#include "World/World.h"
 #include "interface.h"
 
 int main() {
@@ -13,7 +14,9 @@ int main() {
     sf::View vue = window.getDefaultView();
     window.setFramerateLimit(30);
     Ihm test{&window};
-    Flock f1{Animal::Bird, 20.f, 100, 800, 800, test};
+    ToroidalWorld w{800.f, 800.f};
+    w.flocks.emplace_back(Animal::Bird, 20.f, 100, 800, 800, test);
+    Flock& f1{w.flocks[0]};
     f1.max_speed = 200.f;
     f1.max_force = 800.f;
     f1.put_on_rectangle(400, 200, 10, 10);
@@ -24,26 +27,26 @@ int main() {
     //    f2.put_on_rectangle(400, 200, 10, 10);
     //    f2.move({0., 200.});
 
-    //    Steering seek{Steering::Behavior::Flee, {.seek_flee={.target={400.,
+    //    Steering seek{Steering::Type::Flee, {.seek_flee={.target={400.,
     //    400.}}}, 20.};
 
     CombinedBehavior cb{};
-    cb.add(Steering::Behavior::Cohesion,
-           {.cas = {.detection_range = 25.f, .detection_cos_fov = -.3f}}, 15.f);
-    cb.add(Steering::Behavior::Alignment,
-           {.cas = {.detection_range = 30.f, .detection_cos_fov = -.2f}}, 15.f);
-    cb.add(Steering::Behavior::Separation,
-           {.cas = {.detection_range = 50.f, .detection_cos_fov = -.5f}},
+    cb.add(AtomicBehavior::Type::Cohesion,
+           {.cas = {.range = 25.f, .cos_fov = -.3f}}, 15.f);
+    cb.add(AtomicBehavior::Type::Alignment,
+           {.cas = {.range = 30.f, .cos_fov = -.2f}}, 15.f);
+    cb.add(AtomicBehavior::Type::Separation,
+           {.cas = {.range = 50.f, .cos_fov = -.5f}},
            100.f);
-    cb.add(Steering::Behavior::Wander,
+    cb.add(AtomicBehavior::Type::Wander,
            {.wander = {.sphere_dist = 100.f,
                        .sphere_radius = 90.f,
                        .displacement_amplitude = .2f}},
            6.f);
 
-    Steering steer{Steering::Behavior::Arrival,
-                   {.arrival = {.target = {400., 400.}, .range = 200.}},
-                   20.};
+    AtomicBehavior steer{AtomicBehavior::Type::Arrival,
+                         {.arrival = {.target = {400., 400.}, .range = 200.}},
+                         20.};
     sf::Clock c{};
     auto dt = c.restart();
     //-_-_-_-__-_-_-_-_-_-_-__-_-_-_-Etats souris
@@ -145,9 +148,9 @@ int main() {
         window.clear(sf::Color::White);
         dt = c.restart();
         auto tmp = c.getElapsedTime();
-        cb.compute(f1);
+        cb.compute(f1, &w);
         //        cb.compute(f2);
-        f1.update(dt);
+        w.update(dt);
         //        f2.update(dt);
         //-_-_-_-_-__-_-_-_-_-_-_-_--_-_DESSSIN
         window.draw(background);

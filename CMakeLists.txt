@@ -4,17 +4,30 @@ project(BoidSFML)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(BoidSFML main.cpp
-        Movement/Flock.h
-        Movement/Flock.cpp
-        Movement/Steering.h
-        Movement/Steering.cpp
-        Movement/CombinedBehavior.h
-        Movement/CombineBehavior.cpp
+        Creatures/Flock.h
+        Creatures/Flock.cpp
+        Behavior/AtomicBehavior.h
+        Behavior/AtomicBehavior.cpp
+        Behavior/CombinedBehavior.h
+        Behavior/CombineBehavior.cpp
         utils.h
         utils.cpp
         interface.h
         interface.cpp
         interface.cpp
+        World/Noise.h
+        World/Noise.cpp
+        World/VectorField.h
+        World/VectorField.cpp
+        World/World.h
+        World/World.h
+        Behavior/StatedBehavior.h
+        Behavior/StatedBehavior.cpp
+        World/World.cpp
+        Creatures/Animals.h
+        Creatures/FlockMember.h
+        Creatures/FlockMember.h
+        Behavior/Behavior.h
 )
 target_include_directories(BoidSFML PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
