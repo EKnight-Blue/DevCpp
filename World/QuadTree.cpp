@@ -2,7 +2,7 @@
 #include "World.h"
 #include "utils.h"
 
-QuadTree::QuadTree(sf::Vector2f const top_left, sf::Vector2f const bottom_right) : top_left(top_left), bottom_right(bottom_right), center{0.5f * (top_left + bottom_right)} {
+QuadTree::QuadTree(sf::Vector2f const top_left, sf::Vector2f const bottom_right, QuadTree * parent) : top_left(top_left), bottom_right(bottom_right), center{0.5f * (top_left + bottom_right)}, parent{parent} {
 
 }
 
@@ -11,10 +11,10 @@ size_t QuadTree::chose_quadrant(const sf::Vector2f &point) const {
 }
 
 void QuadTree::divide() {
-    children.emplace_back(top_left, center); // NW
-    children.emplace_back(sf::Vector2f{center.x, top_left.y}, sf::Vector2f{bottom_right.x, center.y}); // NE
-    children.emplace_back(sf::Vector2f{top_left.x, center.y}, sf::Vector2f{center.x, bottom_right.y}); // SW
-    children.emplace_back(center, bottom_right); // SE
+    children.emplace_back(top_left, center, this); // NW
+    children.emplace_back(sf::Vector2f{center.x, top_left.y}, sf::Vector2f{bottom_right.x, center.y}, this); // NE
+    children.emplace_back(sf::Vector2f{top_left.x, center.y}, sf::Vector2f{center.x, bottom_right.y}, this); // SW
+    children.emplace_back(center, bottom_right, this); // SE
 }
 
 void QuadTree::insert(const QuadTreeElement &element) {
@@ -28,8 +28,12 @@ void QuadTree::insert(const QuadTreeElement &element) {
     children[chose_quadrant(element.position)].insert(element);
 }
 
+void QuadTree::reset() {
+    cnt = 0;
+    children.clear();
+}
 
-bool QuadTree::line_line(sf::Vector2f const& point, sf::Vector2f && director, float sq_radius, World const * const world) const {
+bool QuadTree::line_line(sf::Vector2f const& point, sf::Vector2f const & director, float sq_radius, World const * const world) const {
     sf::Vector2f v1 = world->position_difference(top_left, point);
     sf::Vector2f v2 = world->position_difference(bottom_right, point);
     if (director.x != 0.f) {

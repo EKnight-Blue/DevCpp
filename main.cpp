@@ -15,15 +15,13 @@ int main() {
     window.setFramerateLimit(30);
     Ihm test{&window};
     ToroidalWorld w{800.f, 800.f};
-    w.flocks.emplace_back(Animal::Bird, 20.f, 500, 800, 800, test);
+    w.flocks.emplace_back(Animal::Bird, 20.f, 1000, 800, 800, test);
     Flock& f1{w.flocks[0]};
     f1.max_speed = 200.f;
     f1.max_force = 800.f;
-    f1.put_on_rectangle(400, 400, 50, 10);
+    f1.put_on_rectangle(400, 400, 25, 40);
 
     CombinedBehavior cb{};
-    cb.add(AtomicBehavior::Type::Seek,
-           {.seek_flee = {.target={400.f, 400.f}}}, 15.f);
     cb.add(AtomicBehavior::Type::Cohesion,
            {.cas = {.range = 25.f, .cos_fov = .5f}}, 15.f);
     cb.add(AtomicBehavior::Type::Alignment,

@@ -21,21 +21,23 @@ struct QuadTreeElement{
 class World;
 class QuadTree{
 public:
-    QuadTree(sf::Vector2f top_left, sf::Vector2f bottom_right);
+    QuadTree(sf::Vector2f top_left, sf::Vector2f bottom_right, QuadTree * parent);
     void insert(QuadTreeElement const &element);
-    [[nodiscard]] size_t chose_quadrant(sf::Vector2f const& point) const;
-    void divide();
+    void reset();
 
     bool intersects_fov(sf::Vector2f const &point, sf::Vector2f const& orientation, float sq_radius, float cos_fov, World const * world) const;
-private:
+
     sf::Vector2f const top_left;
     sf::Vector2f const bottom_right;
     sf::Vector2f const center;
     size_t cnt{0};
     std::vector<QuadTree> children{};
     std::array<QuadTreeElement, QuadTreeSize> elements;
-
-    bool line_line(sf::Vector2f const& point, sf::Vector2f&& director, float sq_radius, World const * const world) const;
+    QuadTree * parent;
+private:
+    [[nodiscard]] size_t chose_quadrant(sf::Vector2f const& point) const;
+    void divide();
+    bool line_line(sf::Vector2f const& point, sf::Vector2f const & director, float sq_radius, World const * const world) const;
     bool arc_line(sf::Vector2f const& point, sf::Vector2f const& orientation, float sq_radius, float cos_fov, World const * const world) const;
     bool completely_inside(sf::Vector2f const& point, sf::Vector2f const& orientation, float sq_radius, float cos_fov, World const * const world) const;
 };

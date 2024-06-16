@@ -5,8 +5,8 @@ World::NeighborIterator::NeighborIterator(World const * const world, Animal cons
     world{world}, animal{animal}, member{member}, sq_range{range * range}, cos_fov{cos_fov} {
 }
 
-bool World::NeighborIterator::test(const FlockMember &other) const {
-    sf::Vector2f vec{world->position_difference(other.position, member.position)};
+bool World::NeighborIterator::test(const sf::Vector2f &position) const {
+    sf::Vector2f vec{world->position_difference(position, member.position)};
     float sq_mag = sq_magnitude(vec);
     return sq_mag < sq_range && dot(member.orientation, vec) >= cos_fov * sqrtf(sq_mag);
 }
@@ -26,7 +26,7 @@ bool World::NaiveIterator::next(FlockMember &output_member) {
             FlockMember const& other{flock.members[member_index]};
             if (&other == &member)
                 continue;
-            if (test(other)) {
+            if (test(other.position)) {
                 output_member = other;
                 ++member_index;
                 return true;
@@ -65,9 +65,78 @@ void ToroidalWorld::validate_position(sf::Vector2f &position) const {
 
 void ToroidalWorld::update(sf::Time delta_time) {
     World::update(delta_time);
-    for (auto& flock : flocks) {
-        for (auto& member : flock.members) {
+    tree.reset();
+    for (uint32_t flock_index{0}; flock_index < flocks.size(); ++flock_index) {
+        Flock& flock{flocks[flock_index]};
+        for (uint32_t member_index{0}; member_index < flock.members.size(); ++member_index) {
+            FlockMember& member{flock.members[member_index]};
             validate_position(member.position);
+            tree.insert({
+                .animal=flock.animal,
+                .position=member.position,
+                .flock_index=flock_index,
+                .member_index=member_index,
+            });
+        }
+
+    }
+
+}
+
+ToroidalWorld::QuadIterator::QuadIterator(const ToroidalWorld *world, Animal animal, const FlockMember &member, float range, float cos_fov) :
+        World::NeighborIterator(world, animal, member, range, cos_fov), current{&world->tree}, range{range} {
+
+}
+bool ToroidalWorld::QuadIterator::process_elements(FlockMember &output_member) {
+    for (; element_index < current->cnt; ++element_index) {
+        auto &element = current->elements[element_index];
+        if (element.animal != animal)
+            continue;
+        if (test(element.position)) {
+            output_member = world->flocks[element.flock_index].members[element.member_index];
+            ++element_index;
+            return true;
         }
     }
+    return false;
+}
+
+bool ToroidalWorld::QuadIterator::propagate_to_children() {
+    for (auto& child : current->children) {
+        if (child.intersects_fov(member.position, member.orientation, sq_range, cos_fov, world)) {
+            current = &child;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool ToroidalWorld::QuadIterator::next(FlockMember &output_member) {
+    while (true) {
+        if (process_elements(output_member))
+            return true;
+        element_index = 0;
+        if (propagate_to_children())
+            continue;
+        while (current->parent) {
+            QuadTree * parent{current->parent};
+            // try to access next sibling
+            ++current;
+
+            // out of siblings
+            if (current == parent->children.data() + 4) {
+                // pop the "stack"
+                current = parent;
+                continue;
+            }
+            if (current->intersects_fov(member.position, member.orientation, sq_range, cos_fov, world))
+                break;
+        }
+        if (!current->parent)
+            return false;
+    }
+}
+
+std::unique_ptr<World::NeighborIterator> ToroidalWorld::make_neighbor_iterator(Animal animal, const FlockMember &member, float range, float cos_fov) const {
+    return std::make_unique<QuadIterator>(this, animal, member, range, cos_fov);
 }
