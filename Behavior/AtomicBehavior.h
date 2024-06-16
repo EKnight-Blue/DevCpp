@@ -62,6 +62,7 @@ public:
 
     explicit AtomicBehavior(Type type, Parameters const& data, const float c) : type{type}, parameters{data}, coefficient{c} {};
     void update_values(Parameters const& new_data, float c);
+    void make_gui() override;
 
 private:
     friend class CombinedBehavior;
@@ -80,6 +81,13 @@ private:
     void wander(Flock const &flock, FlockMember &member, World const *world) const;
     void pursuit(Flock const &flock, FlockMember &member, World const *world) const;
     void evasion(Flock const &flock, FlockMember &member, World const *world) const;
+
+    using BehaviorGui = void (AtomicBehavior::*)();
+    void seek_flee_gui();
+    void arrival_gui();
+    void cas_gui();
+    void wander_gui();
+    void pursuit_evasion_gui();
 };
 
 

@@ -1,7 +1,7 @@
-#ifndef BOIDSFML_WORLD_H
-#define BOIDSFML_WORLD_H
+#ifndef DEV_CPP_WORLD_H
+#define DEV_CPP_WORLD_H
 
-#include "SFML/Graphics.hpp"
+#include "SFML/System/Vector2.hpp"
 #include "Creatures/Flock.h"
 #include <memory>
 
@@ -25,7 +25,7 @@ public:
         float const sq_range;
         float const cos_fov;
     };
-    virtual std::unique_ptr<NeighborIterator> make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) const;
+    [[nodiscard]] virtual std::unique_ptr<NeighborIterator> make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) const;
 
     class NaiveIterator : public NeighborIterator{
     public:
@@ -54,4 +54,4 @@ private:
 };
 
 
-#endif //BOIDSFML_WORLD_H
+#endif //DEV_CPP_WORLD_H

@@ -1,6 +1,7 @@
 #include "AtomicBehavior.h"
 #include "utils.h"
 #include <functional>
+#include "imgui-SFML.h"
 
 
 void AtomicBehavior::update_values(const Parameters &new_data, const float c) {
@@ -84,7 +85,7 @@ void AtomicBehavior::separation(Flock const& flock, FlockMember &member, World c
         sf::Vector2f vec = world->position_difference(member.position, neighbor.position);
         float sq_mag = sq_magnitude(vec);
         if (0.f != sq_mag)
-            return;
+            force += vec / sq_mag;
     }
     member.force += (coefficient * parameters.cas.range) * force;
 }
@@ -153,4 +154,62 @@ void AtomicBehavior::compute_body(Flock& flock, FlockMember& member, World * wor
     };
     BehaviorMethod const method = behaviors[static_cast<size_t>(type)];
     std::invoke(method, this, flock, member, world);
+}
+
+
+
+void AtomicBehavior::seek_flee_gui() {
+    ImGui::InputFloat2("Target", std::bit_cast<float *>(&parameters.seek_flee.target));
+}
+
+void AtomicBehavior::arrival_gui() {
+    ImGui::InputFloat2("Target", std::bit_cast<float *>(&parameters.arrival.target));
+    ImGui::InputFloat("Slowdown range", &parameters.arrival.range);
+}
+
+void AtomicBehavior::cas_gui() {
+    ImGui::InputFloat("Detection range", &parameters.cas.range);
+    ImGui::InputFloat("Cos Field of view", &parameters.cas.cos_fov);
+}
+
+void AtomicBehavior::wander_gui() {
+    ImGui::InputFloat("Sphere distance", &parameters.wander.sphere_dist);
+    ImGui::InputFloat("Sphere radius", &parameters.wander.sphere_radius);
+    ImGui::InputFloat("Increment amplitude", &parameters.wander.displacement_amplitude);
+}
+
+void AtomicBehavior::pursuit_evasion_gui() {
+    ImGui::InputFloat("Detection range", &parameters.pursuit_evasion.fov.range);
+    ImGui::InputFloat("Cos Field of view", &parameters.pursuit_evasion.fov.cos_fov);
+}
+
+void AtomicBehavior::make_gui() {
+    static std::array<BehaviorGui, static_cast<size_t>(Type::Count)> const guis{
+        &AtomicBehavior::seek_flee_gui,
+        &AtomicBehavior::seek_flee_gui,
+        &AtomicBehavior::arrival_gui,
+        &AtomicBehavior::cas_gui,
+        &AtomicBehavior::cas_gui,
+        &AtomicBehavior::cas_gui,
+        &AtomicBehavior::wander_gui,
+        &AtomicBehavior::pursuit_evasion_gui,
+        &AtomicBehavior::pursuit_evasion_gui
+    };
+    static std::array<std::string, static_cast<size_t>(Type::Count)> const names{
+        "Seek",
+        "Flee",
+        "Arrival",
+        "Cohesion",
+        "Alignment",
+        "Separation",
+        "Wander",
+        "Pursuit",
+        "Evasion"
+    };
+    if(ImGui::TreeNode(names[static_cast<size_t>(type)].data())) {
+        ImGui::InputFloat("Coefficient", &coefficient);
+        std::invoke(guis[static_cast<size_t>(type)], this);
+        ImGui::TreePop();
+    }
+
 }

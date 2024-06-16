@@ -15,34 +15,27 @@ int main() {
     window.setFramerateLimit(30);
     Ihm test{&window};
     ToroidalWorld w{800.f, 800.f};
-    w.flocks.emplace_back(Animal::Bird, 20.f, 100, 800, 800, test);
+    w.flocks.emplace_back(Animal::Bird, 20.f, 500, 800, 800, test);
     Flock& f1{w.flocks[0]};
     f1.max_speed = 200.f;
     f1.max_force = 800.f;
-    f1.put_on_rectangle(400, 200, 10, 10);
-
-    //    Flock f2{100, 800, 800};
-    //    f2.max_speed = 200.f;
-    //    f2.max_force = 800.f;
-    //    f2.put_on_rectangle(400, 200, 10, 10);
-    //    f2.move({0., 200.});
-
-    //    Steering seek{Steering::Type::Flee, {.seek_flee={.target={400.,
-    //    400.}}}, 20.};
+    f1.put_on_rectangle(400, 400, 50, 10);
 
     CombinedBehavior cb{};
+    cb.add(AtomicBehavior::Type::Seek,
+           {.seek_flee = {.target={400.f, 400.f}}}, 15.f);
     cb.add(AtomicBehavior::Type::Cohesion,
-           {.cas = {.range = 25.f, .cos_fov = -.3f}}, 15.f);
+           {.cas = {.range = 25.f, .cos_fov = .5f}}, 15.f);
     cb.add(AtomicBehavior::Type::Alignment,
-           {.cas = {.range = 30.f, .cos_fov = -.2f}}, 15.f);
+           {.cas = {.range = 30.f, .cos_fov = .8f}}, 15.f);
     cb.add(AtomicBehavior::Type::Separation,
-           {.cas = {.range = 50.f, .cos_fov = -.5f}},
-           100.f);
+           {.cas = {.range = 50.f, .cos_fov = 0.f}},
+           50.f);
     cb.add(AtomicBehavior::Type::Wander,
            {.wander = {.sphere_dist = 100.f,
                        .sphere_radius = 90.f,
-                       .displacement_amplitude = .2f}},
-           6.f);
+                       .displacement_amplitude = .5f}},
+           30.f);
 
     AtomicBehavior steer{AtomicBehavior::Type::Arrival,
                          {.arrival = {.target = {400., 400.}, .range = 200.}},
@@ -120,8 +113,7 @@ int main() {
             }
 
             case sf::Event::Resized: {
-                sf::FloatRect zoneVisible(0, 0, event.size.width,
-                                          event.size.height);
+                sf::FloatRect zoneVisible(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height));
                 vue = sf::View(zoneVisible);
                 window.setView(vue);
                 break;
@@ -147,15 +139,11 @@ int main() {
         }
         window.clear(sf::Color::White);
         dt = c.restart();
-        auto tmp = c.getElapsedTime();
         cb.compute(f1, &w);
-        //        cb.compute(f2);
         w.update(dt);
-        //        f2.update(dt);
         //-_-_-_-_-__-_-_-_-_-_-_-_--_-_DESSSIN
         window.draw(background);
         f1.draw(window);
-        //        f2.draw(window);
         test.affichage_ihm();
         window.display();
     }

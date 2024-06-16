@@ -11,6 +11,7 @@ public:
         }
     };
     virtual ~Behavior() = default;
+    virtual void make_gui() = 0;
 private:
     virtual void compute_body(Flock& flock, FlockMember& member, World * world) = 0;
 };
