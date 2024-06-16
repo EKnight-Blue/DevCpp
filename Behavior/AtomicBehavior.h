@@ -55,6 +55,7 @@ public:
         struct PursuitEvasion{
             Animal animal;
             DetectionFOV fov;
+            float prediction_time;
         };
         PursuitEvasion pursuit_evasion;
     };

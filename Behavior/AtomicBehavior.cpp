@@ -97,12 +97,46 @@ void AtomicBehavior::wander([[maybe_unused]] Flock const &flock, FlockMember &me
 
 
 void AtomicBehavior::pursuit([[maybe_unused]] Flock const &flock, [[maybe_unused]] FlockMember &member, [[maybe_unused]] World const *world) const {
-    // TODO: implement this
+    auto it = world->make_neighbor_iterator(parameters.pursuit_evasion.animal, member, parameters.pursuit_evasion.fov.range, parameters.pursuit_evasion.fov.cos_fov);
+    FlockMember neighbor;
+    FlockMember best;
+    float best_dist{HUGE_VALF};
+    while (it->next(neighbor)) {
+        float dist{magnitude(world->position_difference(neighbor.position, member.position))};
+        if (dist < best_dist){
+            best_dist = dist;
+            best = neighbor;
+        }
+    }
+    if (best_dist == HUGE_VALF)
+        return;
+    sf::Vector2f vec = world->position_difference(
+    best.position + (best.speed * parameters.pursuit_evasion.prediction_time) * best.orientation,
+    member.position
+    );
+    member.force += coefficient * sub_seek(flock, member, vec);
 }
 
 
 void AtomicBehavior::evasion([[maybe_unused]] Flock const &flock, [[maybe_unused]] FlockMember &member, [[maybe_unused]]World const *world) const {
-    // TODO: implement this
+    auto it = world->make_neighbor_iterator(parameters.pursuit_evasion.animal, member, parameters.pursuit_evasion.fov.range, parameters.pursuit_evasion.fov.cos_fov);
+    FlockMember neighbor;
+    FlockMember best;
+    float best_dist{HUGE_VALF};
+    while (it->next(neighbor)) {
+        float dist{magnitude(world->position_difference(neighbor.position, member.position))};
+        if (dist < best_dist){
+            best_dist = dist;
+            best = neighbor;
+        }
+    }
+    if (best_dist == HUGE_VALF)
+        return;
+    sf::Vector2f vec = world->position_difference(
+            member.position,
+            best.position + (best.speed * parameters.pursuit_evasion.prediction_time) * best.orientation
+    );
+    member.force += coefficient * sub_seek(flock, member, vec);
 }
 
 void AtomicBehavior::compute_body(Flock& flock, FlockMember& member, World * world) {
