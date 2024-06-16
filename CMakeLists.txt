@@ -28,6 +28,7 @@ add_executable(BoidSFML main.cpp
         Creatures/FlockMember.h
         Creatures/FlockMember.h
         Behavior/Behavior.h
+        Creatures/Animals.cpp
 )
 target_include_directories(BoidSFML PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 

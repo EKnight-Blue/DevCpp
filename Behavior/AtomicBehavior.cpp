@@ -179,6 +179,14 @@ void AtomicBehavior::wander_gui() {
 }
 
 void AtomicBehavior::pursuit_evasion_gui() {
+    if (ImGui::BeginListBox("Target animal")) {
+        for (size_t index{0}; index < static_cast<size_t>(Animal::Count); ++index) {
+            if(ImGui::Selectable(animal_names[index].data(), static_cast<Animal>(index) == parameters.pursuit_evasion.animal)) {
+                parameters.pursuit_evasion.animal = static_cast<Animal>(index);
+            }
+        }
+        ImGui::EndListBox();
+    }
     ImGui::InputFloat("Detection range", &parameters.pursuit_evasion.fov.range);
     ImGui::InputFloat("Cos Field of view", &parameters.pursuit_evasion.fov.cos_fov);
 }

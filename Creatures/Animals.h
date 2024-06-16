@@ -2,6 +2,8 @@
 #define BOIDSFML_ANIMALS_H
 
 #include <cstdint>
+#include <array>
+#include <string>
 
 enum class Animal {
     // Sprites from https://elthen.itch.io/2d-pixel-art-squirrel-sprites
@@ -21,6 +23,7 @@ enum class Animal {
     Fox,
     Count
 };
+extern std::array<std::string, static_cast<size_t>(Animal::Count)> const animal_names;
 
 enum class Squirrel{
     Idle,
