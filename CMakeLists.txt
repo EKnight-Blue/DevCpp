@@ -29,6 +29,10 @@ add_executable(BoidSFML main.cpp
         Creatures/FlockMember.h
         Behavior/Behavior.h
         Creatures/Animals.cpp
+        World/QuadTree.h
+        World/QuadTree.h
+        World/QuadTree.cpp
+        World/QuadTree.cpp
 )
 target_include_directories(BoidSFML PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
