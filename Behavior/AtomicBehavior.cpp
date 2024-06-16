@@ -19,29 +19,29 @@ sf::Vector2f sub_seek(Flock const& flock, FlockMember const& member, sf::Vector2
 }
 
 
-sf::Vector2f AtomicBehavior::seek(Flock const& flock, FlockMember &member, World const *world) const {
+void AtomicBehavior::seek(Flock const& flock, FlockMember &member, World const *world) const {
     sf::Vector2f desired_velocity = world->position_difference(parameters.seek_flee.target, member.position);
-    return sub_seek(flock, member, desired_velocity);
+    member.force += coefficient * sub_seek(flock, member, desired_velocity);
 }
 
 
-sf::Vector2f AtomicBehavior::flee(Flock const& flock, FlockMember &member, World const *world) const {
+void AtomicBehavior::flee(Flock const& flock, FlockMember &member, World const *world) const {
     sf::Vector2f desired_velocity = world->position_difference(member.position, parameters.seek_flee.target);
-    return sub_seek(flock, member, desired_velocity);
+    member.force += coefficient * sub_seek(flock, member, desired_velocity);
 }
 
-sf::Vector2f AtomicBehavior::arrival(Flock const& flock, FlockMember &member, World const *world) const {
+void AtomicBehavior::arrival(Flock const& flock, FlockMember &member, World const *world) const {
     sf::Vector2f desired_velocity = world->position_difference(parameters.arrival.target, member.position);
     float const old_mag = magnitude(desired_velocity);
     if (old_mag < parameters.arrival.range) {
-        return desired_velocity * (flock.max_speed / parameters.arrival.range) - member.speed * member.orientation;
+        member.force += coefficient * (desired_velocity * (flock.max_speed / parameters.arrival.range) - member.speed * member.orientation);
     } else {
-        return desired_velocity * (flock.max_speed / old_mag) - member.speed * member.orientation;
+        member.force += coefficient * (desired_velocity * (flock.max_speed / old_mag) - member.speed * member.orientation);
     }
 }
 
 
-sf::Vector2f AtomicBehavior::cohesion(Flock const& flock, FlockMember &member, World const *world) const {
+void AtomicBehavior::cohesion(Flock const& flock, FlockMember &member, World const *world) const {
     sf::Vector2f desired_velocity{0., 0.};
     size_t neighbor_cnt = 0;
 
@@ -52,13 +52,13 @@ sf::Vector2f AtomicBehavior::cohesion(Flock const& flock, FlockMember &member, W
         desired_velocity += world->position_difference(neighbor.position, member.position);
     }
     if (!neighbor_cnt) {
-        return desired_velocity;
+        return;
     }
-    return sub_seek(flock, member, desired_velocity / static_cast<float>(neighbor_cnt));
+    member.force += coefficient * sub_seek(flock, member, desired_velocity / static_cast<float>(neighbor_cnt));
 }
 
 
-sf::Vector2f AtomicBehavior::alignment(Flock const& flock, FlockMember &member, World const *world) const {
+void AtomicBehavior::alignment(Flock const& flock, FlockMember &member, World const *world) const {
     sf::Vector2f desired_velocity{0., 0.};
     size_t neighbor_cnt = 0;
 
@@ -70,13 +70,13 @@ sf::Vector2f AtomicBehavior::alignment(Flock const& flock, FlockMember &member, 
     }
     if (!neighbor_cnt) {
         // 0., 0.
-        return desired_velocity;
+        return;
     }
-    return sub_seek(flock, member, desired_velocity / static_cast<float>(neighbor_cnt));
+    member.force += coefficient * sub_seek(flock, member, desired_velocity / static_cast<float>(neighbor_cnt));
 }
 
 
-sf::Vector2f AtomicBehavior::separation(Flock const& flock, FlockMember &member, World const *world) const {
+void AtomicBehavior::separation(Flock const& flock, FlockMember &member, World const *world) const {
     sf::Vector2f force{0., 0.};
     auto it = world->make_neighbor_iterator(flock.animal, member, parameters.cas.range, parameters.cas.cos_fov);
     FlockMember neighbor;
@@ -84,27 +84,25 @@ sf::Vector2f AtomicBehavior::separation(Flock const& flock, FlockMember &member,
         sf::Vector2f vec = world->position_difference(member.position, neighbor.position);
         float sq_mag = sq_magnitude(vec);
         if (0.f != sq_mag)
-            force += vec / sq_mag;
+            return;
     }
-    return parameters.cas.range * force;
+    member.force += (coefficient * parameters.cas.range) * force;
 }
 
 
-sf::Vector2f AtomicBehavior::wander([[maybe_unused]]Flock const &flock, FlockMember &member, [[maybe_unused]]World const *world) const {
+void AtomicBehavior::wander([[maybe_unused]] Flock const &flock, FlockMember &member, [[maybe_unused]] World const *world) const {
     member.last_wander_angle += (2.f * random_float() - 1.f) * parameters.wander.displacement_amplitude;
-    return member.orientation * parameters.wander.sphere_dist + parameters.wander.sphere_radius * sf::Vector2f{cosf(member.last_wander_angle), sinf(member.last_wander_angle)};
+    member.force += coefficient * member.orientation * parameters.wander.sphere_dist + parameters.wander.sphere_radius * sf::Vector2f{cosf(member.last_wander_angle), sinf(member.last_wander_angle)};
 }
 
 
-sf::Vector2f AtomicBehavior::pursuit([[maybe_unused]]Flock const &flock, [[maybe_unused]]FlockMember &member, [[maybe_unused]] World const *world) const {
+void AtomicBehavior::pursuit([[maybe_unused]] Flock const &flock, [[maybe_unused]] FlockMember &member, [[maybe_unused]] World const *world) const {
     // TODO: implement this
-    return {0.f, 0.f};
 }
 
 
-sf::Vector2f AtomicBehavior::evasion([[maybe_unused]]Flock const &flock, [[maybe_unused]]FlockMember &member, [[maybe_unused]]World const *world) const {
+void AtomicBehavior::evasion([[maybe_unused]] Flock const &flock, [[maybe_unused]] FlockMember &member, [[maybe_unused]]World const *world) const {
     // TODO: implement this
-    return {0.f, 0.f};
 }
 
 void AtomicBehavior::compute_body(Flock& flock, FlockMember& member, World * world) {
@@ -120,5 +118,5 @@ void AtomicBehavior::compute_body(Flock& flock, FlockMember& member, World * wor
         &AtomicBehavior::evasion
     };
     BehaviorMethod const method = behaviors[static_cast<size_t>(type)];
-    member.force += coefficient * std::invoke(method, this, flock, member, world);
+    std::invoke(method, this, flock, member, world);
 }
