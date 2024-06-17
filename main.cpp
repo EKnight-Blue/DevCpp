@@ -6,7 +6,8 @@
 #include <SFML/System/Clock.hpp>
 #include <cmath>
 #include <iostream>
-
+long long int fps_somme = 0;
+long long int fps_compte = 0;
 int main() {
     sf::Texture texture;
     texture.loadFromFile("./resources/bg.jpg");
@@ -14,7 +15,7 @@ int main() {
     sf::RenderWindow window{sf::VideoMode{800, 800}, "Game"};
     sf::View vue = window.getDefaultView();
     window.setFramerateLimit(30);
-    Ihm test{&window};
+    // Ihm test{&window};
     FiniteWorld w{800.f, 800.f};
     w.flocks.emplace_back(Animal::Bird, 20.f, 1000);
     Flock &f1{w.flocks[0]};
@@ -48,7 +49,7 @@ int main() {
     while (window.isOpen()) {
         sf::Event event{};
         while (window.pollEvent(event)) {
-            test.évènements_ihm(event);
+            // test.évènements_ihm(event);
             switch (event.type) {
             case sf::Event::MouseButtonPressed:
                 switch (event.mouseButton.button) {
@@ -144,9 +145,13 @@ int main() {
         //-_-_-_-_-__-_-_-_-_-_-_-_--_-_DESSSIN
         window.draw(background);
         f1.draw(window);
-        test.affichage_ihm(&w);
+        // test.affichage_ihm(&w);
         window.display();
-        std::cout << "\x1B[31m \r \x1B[2K" << 1E6 / dt.asMicroseconds()
-                  << std::flush;
+        float fps = 1E6 / dt.asMicroseconds();
+        fps_somme += fps;
+        fps_compte++;
+        std::cout << "\x1B[31m \r \x1B[2K" << fps << std::flush;
     }
+    std::cout << "\n moyenne : " << fps_somme / fps_compte << "fps"
+              << std::flush;
 }
