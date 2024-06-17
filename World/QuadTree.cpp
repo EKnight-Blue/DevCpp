@@ -33,7 +33,7 @@ void QuadTree::reset() {
     children.clear();
 }
 
-bool QuadTree::line_line(sf::Vector2f const &v1, sf::Vector2f const &v2, float sq_radius, World const *const world, sf::Vector2f const &director) const {
+bool QuadTree::line_line(sf::Vector2f const &v1, sf::Vector2f const &v2, float sq_radius, sf::Vector2f const &director) const {
     if (director.x != 0.f) {
         float t{v1.x / director.x};
         float dy{v1.y + director.y * t};
@@ -57,7 +57,7 @@ bool QuadTree::line_line(sf::Vector2f const &v1, sf::Vector2f const &v2, float s
     return false;
 }
 
-bool QuadTree::arc_line(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq_radius, float cos_fov, const World *const world, const sf::Vector2f &orientation) const {
+bool QuadTree::arc_line(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq_radius, float cos_fov, const sf::Vector2f &orientation) const {
     if (v1.x * v1.x < sq_radius) {
         float dy{sqrtf(sq_radius - v1.x * v1.x)};
         float ny{top_left.y + v1.y + dy};
@@ -86,7 +86,7 @@ bool QuadTree::arc_line(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq
 }
 
 
-bool QuadTree::completely_inside(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq_radius, float cos_fov, const World *const world, const sf::Vector2f &orientation) {
+bool QuadTree::completely_inside(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq_radius, float cos_fov, const sf::Vector2f &orientation) {
     float m{sq_magnitude(v1)};
     if (!(m < sq_radius && dot(orientation, v1) >= cos_fov * sqrtf(m)))
         return false;
@@ -111,12 +111,12 @@ bool QuadTree::intersects_fov(const sf::Vector2f &point, const sf::Vector2f &ori
     sf::Vector2f v2 = world->position_difference(bottom_right, point);
 
     float sin_fov = sqrtf(1.f - cos_fov * cos_fov);
-    if (line_line(v1, v2, sq_radius, world, orientation ^ sf::Vector2f{cos_fov, sin_fov}))
+    if (line_line(v1, v2, sq_radius, orientation ^ sf::Vector2f{cos_fov, sin_fov}))
         return true;
-    if (line_line(v1, v2, sq_radius, world, orientation ^ sf::Vector2f{cos_fov, -sin_fov}))
+    if (line_line(v1, v2, sq_radius, orientation ^ sf::Vector2f{cos_fov, -sin_fov}))
         return true;
-    if (arc_line(v1, v2, sq_radius, cos_fov, world, orientation))
+    if (arc_line(v1, v2, sq_radius, cos_fov, orientation))
         return true;
     // entire rectangle in fov
-    return completely_inside(v1, v2, sq_radius, cos_fov, world, orientation);
+    return completely_inside(v1, v2, sq_radius, cos_fov, orientation);
 }
