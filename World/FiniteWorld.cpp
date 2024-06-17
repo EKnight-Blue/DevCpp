@@ -2,6 +2,7 @@
 #include "Iterator/QuadIterator.h"
 #include "imgui-SFML.h"
 #include "imgui.h"
+#include <functional>
 
 sf::Vector2f FiniteWorld::position_difference(sf::Vector2f const &v1, sf::Vector2f const &v2) const {
     sf::Vector2f v = v1 - v2;
@@ -30,42 +31,27 @@ void FiniteWorld::validate_toroidal_position(sf::Vector2f &point) const {
 
 
 void FiniteWorld::update(sf::Time delta_time) {
+    static std::array<void (FiniteWorld::*)(sf::Vector2f&) const, 2> validators{
+        &FiniteWorld::validate_normal_position,
+        &FiniteWorld::validate_toroidal_position
+    };
+    auto validator = validators[is_toroidal];
     tree.reset();
-    if (is_toroidal)
-        for (uint32_t flock_index{0}; flock_index < flocks.size(); ++flock_index) {
-            Flock& flock{flocks[flock_index]};
-            for (uint32_t member_index{0}; member_index < flock.members.size(); ++member_index) {
-                FlockMember& member{flock.members[member_index]};
-
-                flock.update(delta_time, member);
-
-                validate_toroidal_position(member.position);
-                tree.insert({
-                    .animal=flock.animal,
-                    .position=member.position,
-                    .flock_index=flock_index,
-                    .member_index=member_index,
-                });
-            }
-
+    for (uint32_t flock_index{0}; flock_index < flocks.size(); ++flock_index) {
+        Flock& flock{flocks[flock_index]};
+        for (uint32_t member_index{0}; member_index < flock.members.size(); ++member_index) {
+            FlockMember& member{flock.members[member_index]};
+            flock.update(delta_time, member);
+            std::invoke(validator, this, member.position);
+            tree.insert({
+                .animal=flock.animal,
+                .position=member.position,
+                .flock_index=flock_index,
+                .member_index=member_index,
+            });
         }
-    else
-        for (uint32_t flock_index{0}; flock_index < flocks.size(); ++flock_index) {
-            Flock& flock{flocks[flock_index]};
-            for (uint32_t member_index{0}; member_index < flock.members.size(); ++member_index) {
-                FlockMember& member{flock.members[member_index]};
 
-                flock.update(delta_time, member);
-
-                validate_normal_position(member.position);
-                tree.insert({
-                    .animal=flock.animal,
-                    .position=member.position,
-                    .flock_index=flock_index,
-                    .member_index=member_index,
-                });
-            }
-        }
+    }
 }
 
 std::unique_ptr<NeighborIterator> FiniteWorld::make_neighbor_iterator(Animal animal, const FlockMember &member, float range, float cos_fov) const {
