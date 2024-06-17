@@ -37,9 +37,12 @@ public:
 private:
     [[nodiscard]] size_t chose_quadrant(sf::Vector2f const& point) const;
     void divide();
-    bool line_line(sf::Vector2f const& point, sf::Vector2f const & director, float sq_radius, World const * const world) const;
-    bool arc_line(sf::Vector2f const& point, sf::Vector2f const& orientation, float sq_radius, float cos_fov, World const * const world) const;
-    bool completely_inside(sf::Vector2f const& point, sf::Vector2f const& orientation, float sq_radius, float cos_fov, World const * const world) const;
+    bool line_line(sf::Vector2f const &v1, sf::Vector2f const &v2, float sq_radius, World const *const world,
+                   sf::Vector2f const &director) const;
+    bool arc_line(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq_radius, float cos_fov,
+                  const World *const world, const sf::Vector2f &orientation) const;
+    static bool completely_inside(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq_radius, float cos_fov,
+                           const World *const world, const sf::Vector2f &orientation) ;
 };
 
 
