@@ -153,8 +153,8 @@ int main() {
         float fps = 1E6 / dt.asMicroseconds();
         fps_somme += fps;
         fps_compte++;
-        std::cout << "\x1B[31m \r \x1B[2K" << fps << std::flush;
+        std::cout << "\x1B[31m \r\x1B[2K" << fps << std::flush;
     }
-    std::cout << "\n moyenne : " << fps_somme / fps_compte << "fps"
+    std::cout << "\n moyenne : " << fps_somme / fps_compte << "fps\x1B[0m"
               << std::flush;
 }
