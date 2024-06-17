@@ -19,12 +19,12 @@ int main() {
     sf::View vue = window.getDefaultView();
     window.setFramerateLimit(30);
     // Ihm test{&window};
-    FiniteWorld w{800.f, 800.f};
-    w.flocks.emplace_back(Animal::Bird, 20.f, 1000);
+    FiniteWorld w{32000.f, 32000.f};
+    w.flocks.emplace_back(Animal::Bird, 20.f, 5000);
     Flock &f1{w.flocks[0]};
     f1.max_speed = 200.f;
     f1.max_force = 800.f;
-    f1.put_on_rectangle(400, 400, 25, 40);
+    f1.put_on_rectangle(32000, 32000, 50, 100);
 
     CombinedBehavior cb{};
     cb.add(AtomicBehavior::Type::Cohesion,
@@ -49,6 +49,7 @@ int main() {
     bool translation{false};
     sf::Vector2f position_précédente_souris_monde;
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+    std::cout << "\x1B[31m";
     while (window.isOpen()) {
         sf::Event event{};
         while (window.pollEvent(event)) {
@@ -153,8 +154,7 @@ int main() {
         float fps = 1E6 / dt.asMicroseconds();
         fps_somme += fps;
         fps_compte++;
-        std::cout << "\x1B[31m \r\x1B[2K" << fps << std::flush;
+        std::cout << "\x1B[2K\r" << fps << std::flush;
     }
-    std::cout << "\n moyenne : " << fps_somme / fps_compte << "fps\x1B[0m"
-              << std::flush;
+    std::cout << "\n moyenne : " << fps_somme / fps_compte << "fps\x1B[0m" << std::flush;
 }
