@@ -1,7 +1,10 @@
 #include "AtomicBehavior.h"
 #include "utils.h"
 #include <functional>
+
 #include "imgui-SFML.h"
+#include "imgui.h"
+#include "World/Iterator/NeighborIterator.h"
 
 
 void AtomicBehavior::update_values(const Parameters &new_data, const float c) {

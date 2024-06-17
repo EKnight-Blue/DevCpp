@@ -3,7 +3,7 @@
 #include "Behavior/AtomicBehavior.h"
 #include <SFML/System/Clock.hpp>
 #include <cmath>
-#include "World/World.h"
+#include "World/FiniteWorld.h"
 #include "interface.h"
 
 int main() {
@@ -14,8 +14,8 @@ int main() {
     sf::View vue = window.getDefaultView();
     window.setFramerateLimit(30);
     Ihm test{&window};
-    ToroidalWorld w{800.f, 800.f};
-    w.flocks.emplace_back(Animal::Bird, 20.f, 1000, 800, 800, test);
+    FiniteWorld w{800.f, 800.f};
+    w.flocks.emplace_back(Animal::Bird, 20.f, 1000);
     Flock& f1{w.flocks[0]};
     f1.max_speed = 200.f;
     f1.max_force = 800.f;
@@ -142,7 +142,7 @@ int main() {
         //-_-_-_-_-__-_-_-_-_-_-_-_--_-_DESSSIN
         window.draw(background);
         f1.draw(window);
-        test.affichage_ihm();
+        test.affichage_ihm(&w);
         window.display();
     }
 }

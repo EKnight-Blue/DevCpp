@@ -1,5 +1,6 @@
 #include "CombinedBehavior.h"
 #include "imgui-SFML.h"
+#include "imgui.h"
 
 void CombinedBehavior::compute_body(Flock& flock, FlockMember& member, World * world) {
     for (auto& steering : behaviors) {

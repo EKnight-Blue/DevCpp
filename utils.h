@@ -39,6 +39,7 @@ constexpr T pow_i(T base, std::size_t power) {
     return result;
 };
 
+
 constexpr float TWO_PI = 2.f * static_cast<float>(M_PI);
 
 #endif //BOIDSFML_UTILS_H

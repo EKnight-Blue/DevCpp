@@ -33,6 +33,20 @@ add_executable(BoidSFML main.cpp
         World/QuadTree.h
         World/QuadTree.cpp
         World/QuadTree.cpp
+        World/FiniteWorld.h
+        World/FiniteWorld.h
+        World/Iterator/NeighborIterator.h
+        World/Iterator/NeighborIterator.cpp
+        World/Iterator/NeighborIterator.cpp
+        World/Iterator/NaiveIterator.h
+        World/Iterator/NaiveIterator.cpp
+        World/Iterator/NaiveIterator.cpp
+        World/Iterator/QuadIterator.h
+        World/Iterator/QuadIterator.h
+        World/Iterator/QuadIterator.cpp
+        World/FiniteWorld.cpp
+        World/FiniteWorld.cpp
+        World/FiniteWorld.cpp
 )
 target_include_directories(BoidSFML PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 

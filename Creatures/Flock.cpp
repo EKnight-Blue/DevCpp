@@ -1,9 +1,10 @@
 #include "Flock.h"
 #include "utils.h"
+#include "imgui.h"
 
 constexpr uint16_t ANIMATION_FRAME_TIME_MS = 100;
 
-Flock::Flock(Animal const animal, const float size, const size_t nb_members, float w, float h) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members) {
+Flock::Flock(Animal const animal, const float size, const size_t nb_members) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members) {
     texture.loadFromFile("./resources/texture.png");
 
     for (int index{0}; index < nb_members; ++index) {
@@ -18,19 +19,6 @@ Flock::Flock(Animal const animal, const float size, const size_t nb_members, flo
     }
 }
 
-Flock::Flock(Animal const animal, const float size, const size_t nb_members, float w, float h, Ihm &interface) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members), abonnements(NB_SUJETS) {
-    texture.loadFromFile("./resources/texture.png");
-
-    for (int index{0}; index < nb_members; ++index) {
-        members[index].last_wander_angle = random_float() * TWO_PI;
-        members[index].orientation = {cosf(members[index].last_wander_angle), sinf(members[index].last_wander_angle)};
-        for (int j{0}; j < 4; ++j) {
-            vertex_array[4 * index + j].color = sf::Color::White;
-        }
-    }
-    // abonnement aux boutons de l'interface
-    toroïdal = static_cast<bool *>(interface.abonnement(BOOL_TOR));
-}
 
 void Flock::put_on_rectangle(float const width, float const height, const size_t columns, const size_t rows) {
     for (size_t row{0}; row < rows; ++row) {
@@ -48,22 +36,20 @@ void Flock::draw(sf::RenderTarget &target) {
     target.draw(vertex_array, &texture);
 }
 
-void Flock::update(sf::Time const delta_time) {
-    for (auto& member : members) {
-        member.age = (member.age + static_cast<uint16_t>(delta_time.asMilliseconds())) % (frame_number[accumulated_state_counts[static_cast<size_t>(animal)] + member.state] * ANIMATION_FRAME_TIME_MS);
-        truncate(member.force, max_force);
+void Flock::update(sf::Time const delta_time, FlockMember &member) const {
+    member.age = (member.age + static_cast<uint16_t>(delta_time.asMilliseconds())) % (frame_number[accumulated_state_counts[static_cast<size_t>(animal)] + member.state] * ANIMATION_FRAME_TIME_MS);
+    truncate(member.force, max_force);
 
-        sf::Vector2f speed{member.speed * member.orientation + delta_time.asSeconds() * member.force};
-        member.force = {0., 0.};
+    sf::Vector2f speed{member.speed * member.orientation + delta_time.asSeconds() * member.force};
+    member.force = {0., 0.};
 
-        member.speed = sqrtf(speed.x * speed.x + speed.y * speed.y);
-        if (member.speed != 0.f)
-            member.orientation = speed / member.speed;
-        if (member.speed > max_speed)
-            member.speed = max_speed;
+    member.speed = sqrtf(speed.x * speed.x + speed.y * speed.y);
+    if (member.speed != 0.f)
+        member.orientation = speed / member.speed;
+    if (member.speed > max_speed)
+        member.speed = max_speed;
 
-        member.position += (delta_time.asSeconds() * member.speed) * member.orientation;
-    }
+    member.position += (delta_time.asSeconds() * member.speed) * member.orientation;
 }
 
 

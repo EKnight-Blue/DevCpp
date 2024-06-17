@@ -6,10 +6,14 @@ Ihm::Ihm(sf::RenderWindow *fenêtre) : abonnements(NB_SUJETS) {
     ImGui::SFML::Init(*fenêtre);
     abonnements[BOOL_TOR] = std::make_unique<int>();
 }
-void Ihm::affichage_ihm() {
+void Ihm::affichage_ihm(World *const world) {
     auto dt = this->horloge.restart();
     ImGui::SFML::Update(*this->fenêtre, dt);
-    this->contenu();
+    ImGui::Begin("Menu");
+
+    world->make_gui();
+
+    ImGui::End();
     ImGui::SFML::Render(*this->fenêtre);
 }
 void Ihm::évènements_ihm(sf::Event évènements) {

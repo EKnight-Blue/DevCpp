@@ -6,11 +6,12 @@
 #include "imgui.h"
 #include <memory>
 #include <vector>
+#include "World/World.h"
 enum sujets { BOOL_TOR, BOOL_FERMETURE, NB_SUJETS };
 class Ihm {
   public:
     Ihm(sf::RenderWindow *fenêtre);
-    void affichage_ihm();
+    void affichage_ihm(World *const world);
     void évènements_ihm(sf::Event évènements);
     void *abonnement(enum sujets sujet);
 
