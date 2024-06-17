@@ -1,10 +1,11 @@
+#include "Behavior/AtomicBehavior.h"
 #include "Behavior/CombinedBehavior.h"
 #include "Creatures/Flock.h"
-#include "Behavior/AtomicBehavior.h"
-#include <SFML/System/Clock.hpp>
-#include <cmath>
 #include "World/FiniteWorld.h"
 #include "interface.h"
+#include <SFML/System/Clock.hpp>
+#include <cmath>
+#include <iostream>
 
 int main() {
     sf::Texture texture;
@@ -16,7 +17,7 @@ int main() {
     Ihm test{&window};
     FiniteWorld w{800.f, 800.f};
     w.flocks.emplace_back(Animal::Bird, 20.f, 1000);
-    Flock& f1{w.flocks[0]};
+    Flock &f1{w.flocks[0]};
     f1.max_speed = 200.f;
     f1.max_force = 800.f;
     f1.put_on_rectangle(400, 400, 25, 40);
@@ -27,8 +28,7 @@ int main() {
     cb.add(AtomicBehavior::Type::Alignment,
            {.cas = {.range = 30.f, .cos_fov = .8f}}, 15.f);
     cb.add(AtomicBehavior::Type::Separation,
-           {.cas = {.range = 50.f, .cos_fov = 0.f}},
-           50.f);
+           {.cas = {.range = 50.f, .cos_fov = 0.f}}, 50.f);
     cb.add(AtomicBehavior::Type::Wander,
            {.wander = {.sphere_dist = 100.f,
                        .sphere_radius = 90.f,
@@ -111,7 +111,9 @@ int main() {
             }
 
             case sf::Event::Resized: {
-                sf::FloatRect zoneVisible(0, 0, static_cast<float>(event.size.width), static_cast<float>(event.size.height));
+                sf::FloatRect zoneVisible(
+                    0, 0, static_cast<float>(event.size.width),
+                    static_cast<float>(event.size.height));
                 vue = sf::View(zoneVisible);
                 window.setView(vue);
                 break;
@@ -144,5 +146,7 @@ int main() {
         f1.draw(window);
         test.affichage_ihm(&w);
         window.display();
+        std::cout << "\x1B[31m \r \x1B[2K" << 1E6 / dt.asMicroseconds()
+                  << std::flush;
     }
 }
