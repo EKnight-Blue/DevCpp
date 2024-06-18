@@ -1,13 +1,13 @@
 #include "Behavior/AtomicBehavior.h"
 #include "Creatures/Flock.h"
-#include "World/FiniteWorld.h"
-#include "interface.h"
 #include "SFML/System/Clock.hpp"
+#include "World/FiniteWorld.h"
+#include "imgui-SFML.h"
+#include "imgui.h"
 #include <cmath>
 #include <iostream>
 
-
-void handle_events(sf::RenderWindow & window) {
+void handle_events(sf::RenderWindow &window) {
     static sf::Vector2f last_mouse_position;
     static int last_button{-1};
     static sf::View vue = window.getDefaultView();
@@ -18,53 +18,56 @@ void handle_events(sf::RenderWindow & window) {
     while (window.pollEvent(event)) {
         ImGui::SFML::ProcessEvent(event);
         switch (event.type) {
-            case sf::Event::MouseButtonPressed:
-                if (last_button != -1)
-                    break;
-                last_button = event.mouseButton.button;
-                last_mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        case sf::Event::MouseButtonPressed:
+            if (last_button != -1)
                 break;
-            case sf::Event::MouseButtonReleased:
-                if (event.mouseButton.button == last_button)
-                    last_button = -1;
+            last_button = event.mouseButton.button;
+            last_mouse_position =
+                window.mapPixelToCoords(sf::Mouse::getPosition(window));
+            break;
+        case sf::Event::MouseButtonReleased:
+            if (event.mouseButton.button == last_button)
+                last_button = -1;
+            break;
+        case sf::Event::MouseMoved:
+            if (last_button != sf::Mouse::Middle)
                 break;
-            case sf::Event::MouseMoved:
-                if (last_button != sf::Mouse::Middle)
-                    break;
-                new_mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                vue.move(last_mouse_position - new_mouse_position);
-                window.setView(vue);
-                last_mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                break;
-            case sf::Event::MouseWheelScrolled: {
-                const sf::Vector2f pos_ini_vue = vue.getCenter();
-                vue.setCenter(
-                        window.mapPixelToCoords(sf::Mouse::getPosition(window)));
-                vue.zoom(1.f + 0.1f * event.mouseWheelScroll.delta);
-                vue.setCenter(pos_ini_vue);
-                window.setView(vue);
-                break;
-            }
+            new_mouse_position =
+                window.mapPixelToCoords(sf::Mouse::getPosition(window));
+            vue.move(last_mouse_position - new_mouse_position);
+            window.setView(vue);
+            last_mouse_position =
+                window.mapPixelToCoords(sf::Mouse::getPosition(window));
+            break;
+        case sf::Event::MouseWheelScrolled: {
+            const sf::Vector2f pos_ini_vue = vue.getCenter();
+            vue.setCenter(
+                window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+            vue.zoom(1.f + 0.1f * event.mouseWheelScroll.delta);
+            vue.setCenter(pos_ini_vue);
+            window.setView(vue);
+            break;
+        }
 
-            case sf::Event::Resized: {
-                sf::FloatRect zoneVisible(
-                        0, 0, static_cast<float>(event.size.width),
-                        static_cast<float>(event.size.height));
-                vue = sf::View(zoneVisible);
-                window.setView(vue);
-                break;
-            }
-            case sf::Event::KeyPressed:
-                if (event.key.code == sf::Keyboard::Q) {
-                    window.close();
-                }
-                break;
-
-            case sf::Event::EventType::Closed:
+        case sf::Event::Resized: {
+            sf::FloatRect zoneVisible(0, 0,
+                                      static_cast<float>(event.size.width),
+                                      static_cast<float>(event.size.height));
+            vue = sf::View(zoneVisible);
+            window.setView(vue);
+            break;
+        }
+        case sf::Event::KeyPressed:
+            if (event.key.code == sf::Keyboard::Q) {
                 window.close();
-                break;
-            default:
-                break;
+            }
+            break;
+
+        case sf::Event::EventType::Closed:
+            window.close();
+            break;
+        default:
+            break;
         }
     }
 }
@@ -89,16 +92,16 @@ int main() {
 
     auto cb{w.behaviors.begin()};
     cb->add(AtomicBehavior::Type::Cohesion,
-           {.cas = {.range = 40.f, .cos_fov = -0.5f}}, 15.f);
+            {.cas = {.range = 40.f, .cos_fov = -0.5f}}, 15.f);
     cb->add(AtomicBehavior::Type::Alignment,
-           {.cas = {.range = 30.f, .cos_fov = .4f}}, 15.f);
+            {.cas = {.range = 30.f, .cos_fov = .4f}}, 15.f);
     cb->add(AtomicBehavior::Type::Separation,
-           {.cas = {.range = 50.f, .cos_fov = -.5f}}, 10.f);
+            {.cas = {.range = 50.f, .cos_fov = -.5f}}, 10.f);
     cb->add(AtomicBehavior::Type::Wander,
-           {.wander = {.sphere_dist = 100.f,
-                       .sphere_radius = 90.f,
-                       .displacement_amplitude = .5f}},
-           5.f);
+            {.wander = {.sphere_dist = 100.f,
+                        .sphere_radius = 90.f,
+                        .displacement_amplitude = .5f}},
+            5.f);
 
     sf::Clock c{};
     auto dt = c.restart();
@@ -125,11 +128,12 @@ int main() {
         window.display();
 
         float fps = 1E6f / static_cast<float>(dt.asMicroseconds());
-        if (fps < 90.f){
+        if (fps < 90.f) {
             fps_somme += fps;
             fps_compte++;
         }
         std::cout << "\x1B[2K\r" << fps << std::flush;
     }
-    std::cout << "\nmoyenne : " << fps_somme / static_cast<float>(fps_compte) << "fps\x1B[0m" << std::flush;
+    std::cout << "\nmoyenne : " << fps_somme / static_cast<float>(fps_compte)
+              << "fps\x1B[0m" << std::flush;
 }
