@@ -40,7 +40,7 @@ TEST(arbre_quaternaire, agrandissement) {
 TEST(Tree, Iteration) {
     constexpr float W{800.f};
     FiniteWorld world{W, W};
-    constexpr int32_t nb{128};
+    constexpr int32_t nb{1024};
     world.flocks.emplace_back(Animal::Bird, 20, nb, 0.f, 0.f);
 
     constexpr float increment{TWO_PI / static_cast<float>(nb)};
