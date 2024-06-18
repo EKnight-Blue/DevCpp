@@ -4,7 +4,7 @@
 
 class FiniteWorld : public World{
 public:
-    FiniteWorld(float width, float height) : width{width}, height{height}, tree{{0.f, 0.f}, {width, height}, nullptr} {};
+    FiniteWorld(float width, float height) : tree{{0.f, 0.f}, {width, height}, nullptr}, width{width}, height{height} {};
     [[nodiscard]] sf::Vector2f position_difference(sf::Vector2f const& v1, sf::Vector2f const & v2) const override;
     void update(sf::Time delta_time) override;
     [[nodiscard]] std::unique_ptr<NeighborIterator> make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) const override;
