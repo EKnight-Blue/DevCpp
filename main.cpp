@@ -165,8 +165,10 @@ int main() {
         window.display();
 
         float fps = 1E6 / dt.asMicroseconds();
-        fps_somme += fps;
-        fps_compte++;
+        if (fps < 90.f){
+            fps_somme += fps;
+            fps_compte++;
+        }
         std::cout << "\x1B[2K\r" << fps << std::flush;
     }
     std::cout << "\n moyenne : " << fps_somme / fps_compte << "fps\x1B[0m" << std::flush;
