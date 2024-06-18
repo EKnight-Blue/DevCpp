@@ -11,7 +11,7 @@
 TEST(Hey, JASON) { ASSERT_TRUE(true); }
 
 TEST(arbre_quaternaire, basique) {
-    QuadTree arbre =
+    auto arbre =
         QuadTree{sf::Vector2f{0, 0}, sf::Vector2f{100, 100}, nullptr};
     arbre.insert({
         .animal = Animal::Rabbit,
@@ -23,7 +23,7 @@ TEST(arbre_quaternaire, basique) {
     EXPECT_EQ(arbre.children.size(), 0);
 }
 TEST(arbre_quaternaire, agrandissement) {
-    QuadTree arbre =
+    auto arbre =
         QuadTree{sf::Vector2f{0, 0}, sf::Vector2f{100, 100}, nullptr};
     for (int i = 0; i < QuadTreeSize + 1; i++) {
         arbre.insert({
