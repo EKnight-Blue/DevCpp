@@ -64,22 +64,22 @@ void QuadTree::reset(float width, float height) {
 bool QuadTree::line_line(sf::Vector2f const &v1, sf::Vector2f const &v2, float sq_radius, sf::Vector2f const &director) const {
     if (director.x != 0.f) {
         float t{v1.x / director.x};
-        float dy{v1.y + director.y * t};
+        float dy{-v1.y + director.y * t};
         if (0.f < t && t * t < sq_radius && 0.f <= dy && top_left.y + dy <= bottom_right.y)
             return true;
         t = v2.x / director.x;
-        dy = v2.y + director.y * t;
-        if (0.f < t && t * t < sq_radius && 0.f <= dy && top_left.y + dy <= bottom_right.y)
+        dy = -v2.y + director.y * t;
+        if (0.f < t && t * t < sq_radius && dy <= 0.f && top_left.y <= dy + bottom_right.y)
             return true;
     }
     if (director.y != 0.f) {
         float t{v1.y / director.y};
-        float dx{v1.x + director.x * t};
+        float dx{-v1.x + director.x * t};
         if (0.f < t && t * t < sq_radius && 0.f <= dx && top_left.x + dx <= bottom_right.x)
             return true;
         t = v2.y / director.y;
-        dx = v2.x + director.x * t;
-        if (0.f < t && t * t < sq_radius && 0.f <= dx && top_left.x + dx <= bottom_right.x)
+        dx = -v2.x + director.x * t;
+        if (0.f < t && t * t < sq_radius && dx <= 0.f && top_left.x <= dx + bottom_right.x)
             return true;
     }
     return false;
