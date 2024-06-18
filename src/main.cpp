@@ -117,7 +117,6 @@ int main() {
         window.draw(background);
         w.draw(window);
         ImGui::SFML::Update(window, dt);
-        ImGui::ShowDemoWindow();
         if (ImGui::Begin("Menu")) {
             w.make_gui();
         }

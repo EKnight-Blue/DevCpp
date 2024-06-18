@@ -3,7 +3,7 @@ project(BoidSFML)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(BoidSFML src/main.cpp
+add_library(BoidLib STATIC
         src/Creatures/Flock.h
         src/Creatures/Flock.cpp
         src/Behavior/AtomicBehavior.h
@@ -46,6 +46,11 @@ add_executable(BoidSFML src/main.cpp
         src/World/FiniteWorld.cpp
         src/World/FiniteWorld.cpp
 )
+target_include_directories(BoidLib PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
+target_link_libraries(BoidLib PUBLIC  sfml-graphics ImGui-SFML::ImGui-SFML)
+add_executable(BoidSFML src/main.cpp
+
+)
 target_include_directories(BoidSFML PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 
 include(FetchContent)
@@ -73,7 +78,8 @@ else()
 endif()
 add_subdirectory(imgui)
 
-target_link_libraries(BoidSFML sfml-graphics ImGui-SFML::ImGui-SFML)
+target_link_libraries(BoidSFML sfml-graphics ImGui-SFML::ImGui-SFML BoidLib)
+
 add_custom_target(copy-resources ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/resources)
 file(GLOB RESOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/resources/*.*)
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/resources
@@ -105,7 +111,8 @@ add_executable(tests
 
 )
 
-target_link_libraries(tests GTest::gtest_main sfml-graphics)
+target_link_libraries(tests GTest::gtest_main sfml-graphics BoidLib)
+target_include_directories(tests PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 
 include(GoogleTest)
 gtest_discover_tests(tests)
