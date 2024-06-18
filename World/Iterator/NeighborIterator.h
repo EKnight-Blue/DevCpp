@@ -3,7 +3,9 @@
 
 #include "World/World.h"
 
-
+/**
+ * Search around the world for FlockMembers of a certain type in eye-sight of of another member
+ */
 class NeighborIterator{
 public:
     NeighborIterator(World const *world, Animal animal, FlockMember const& member, float range, float cos_fov);

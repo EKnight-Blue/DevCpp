@@ -5,6 +5,10 @@ QuadIterator::QuadIterator(FiniteWorld const *world, Animal animal, FlockMember 
 
 }
 
+/**
+ * Test members that are in the current QuadTree
+ * @return
+ */
 FlockMember const * QuadIterator::process_elements() {
     FlockMember const * result{nullptr};
     for (; element_index < current->cnt; ++element_index) {
@@ -23,6 +27,10 @@ FlockMember const * QuadIterator::process_elements() {
     return result;
 }
 
+/**
+ * Try to look in the current tree's children
+ * @return
+ */
 bool QuadIterator::propagate_to_children() {
     for (auto& child : current->children) {
         if (child.intersects_fov(member.position, member.orientation, sq_range, cos_fov, world)) {
@@ -40,6 +48,7 @@ FlockMember const * QuadIterator::next() {
             return result;
         element_index = 0;
         if (propagate_to_children())
+            // current has changed
             continue;
         while (current->parent) {
             QuadTree * parent{current->parent};
@@ -53,9 +62,11 @@ FlockMember const * QuadIterator::next() {
                 continue;
             }
             if (current->intersects_fov(member.position, member.orientation, sq_range, cos_fov, world))
+                // current is valid
                 break;
         }
         if (!current->parent)
+            // back to the root, finished
             return nullptr;
     }
 }

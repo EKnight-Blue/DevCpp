@@ -5,6 +5,11 @@ NeighborIterator::NeighborIterator(World const *world, Animal animal, FlockMembe
         world{world}, animal{animal}, member{member}, sq_range{range * range}, cos_fov{cos_fov} {
 }
 
+/**
+ * Individual eye-sight test
+ * @param position
+ * @return
+ */
 bool NeighborIterator::test(const sf::Vector2f &position) const {
     sf::Vector2f vec{world->position_difference(position, member.position)};
     float sq_mag = sq_magnitude(vec);

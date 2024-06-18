@@ -3,6 +3,9 @@
 #include "NeighborIterator.h"
 #include "World/FiniteWorld.h"
 
+/**
+ * Use QuadTrees to to search for neighbors
+ */
 class QuadIterator : public NeighborIterator{
 public:
     QuadIterator(FiniteWorld const *world, Animal animal, FlockMember const &member, float range, float cos_fov);
