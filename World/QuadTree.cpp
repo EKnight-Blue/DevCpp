@@ -28,8 +28,12 @@ void QuadTree::insert(const QuadTreeElement &element) {
     children[chose_quadrant(element.position)].insert(element);
 }
 
-void QuadTree::reset() {
+void QuadTree::reset(float width, float height) {
     cnt = 0;
+    center.x = width * .5f;
+    center.y = height * .5f;
+    bottom_right.x = width;
+    bottom_right.y = height;
     children.clear();
 }
 
@@ -119,4 +123,17 @@ bool QuadTree::intersects_fov(const sf::Vector2f &point, const sf::Vector2f &ori
         return true;
     // entire rectangle in fov
     return completely_inside(v1, v2, sq_radius, cos_fov, orientation);
+}
+
+void QuadTree::draw(sf::RenderTarget &target) {
+    static sf::RectangleShape shape{};
+    shape.setPosition(top_left);
+    shape.setSize(bottom_right - top_left);
+    shape.setOutlineColor(sf::Color::Red);
+    shape.setFillColor(sf::Color::Transparent);
+    shape.setOutlineThickness(1);
+    target.draw(shape);
+    for (auto & child : children) {
+        child.draw(target);
+    }
 }

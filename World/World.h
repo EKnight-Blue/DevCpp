@@ -12,12 +12,12 @@ public:
     virtual ~World() = default;
     [[nodiscard]] virtual sf::Vector2f position_difference(sf::Vector2f const& v1, sf::Vector2f const & v2) const {return v1 - v2;};
     virtual void update(sf::Time delta_time);
+    void make_gui();
+    virtual void make_sub_gui();
 
-    virtual void make_gui() {
-        // Nothing to do at the moment
-    };
+    virtual void draw(sf::RenderTarget &target);
 
-    [[nodiscard]] virtual std::unique_ptr<NeighborIterator> make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) const;
+    [[nodiscard]] virtual std::unique_ptr<NeighborIterator> make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov);
     std::vector<Flock> flocks{};
     friend NeighborIterator;
 };

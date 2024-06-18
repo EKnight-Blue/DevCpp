@@ -71,16 +71,16 @@ private:
     Parameters parameters;
     float coefficient{1.0};
 
-    using BehaviorMethod = void (AtomicBehavior::*)(Flock const& flock, FlockMember& member, World const * world) const;
-    void seek(Flock const& flock, FlockMember &member, World const *world) const;
-    void flee(Flock const& flock, FlockMember &member, World const *world) const;
-    void arrival(Flock const& flock, FlockMember &member, World const *world) const;
-    void cohesion(Flock const& flock, FlockMember &member, World const *world) const;
-    void alignment(Flock const& flock, FlockMember &member, World const *world) const;
-    void separation(Flock const& flock, FlockMember &member, World const *world) const;
-    void wander(Flock const &flock, FlockMember &member, World const *world) const;
-    void pursuit(Flock const &flock, FlockMember &member, World const *world) const;
-    void evasion(Flock const &flock, FlockMember &member, World const *world) const;
+    using BehaviorMethod = void (AtomicBehavior::*)(Flock const& flock, FlockMember& member, World * world) const;
+    void seek(Flock const& flock, FlockMember &member, World *world) const;
+    void flee(Flock const& flock, FlockMember &member, World *world) const;
+    void arrival(Flock const& flock, FlockMember &member, World *world) const;
+    void cohesion(Flock const& flock, FlockMember &member, World *world) const;
+    void alignment(Flock const& flock, FlockMember &member, World *world) const;
+    void separation(Flock const& flock, FlockMember &member, World *world) const;
+    void wander(Flock const &flock, FlockMember &member, World *world) const;
+    void pursuit(Flock const &flock, FlockMember &member, World *world) const;
+    void evasion(Flock const &flock, FlockMember &member, World *world) const;
 
     using BehaviorGui = void (AtomicBehavior::*)();
     void seek_flee_gui();

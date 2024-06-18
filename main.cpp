@@ -19,25 +19,25 @@ int main() {
     sf::View vue = window.getDefaultView();
     window.setFramerateLimit(30);
     // Ihm test{&window};
-    FiniteWorld w{32000.f, 32000.f};
-    w.flocks.emplace_back(Animal::Bird, 20.f, 5000);
+    FiniteWorld w{1600.f, 1600.f};
+    w.flocks.emplace_back(Animal::Bird, 20.f, 2000);
     Flock &f1{w.flocks[0]};
-    f1.max_speed = 200.f;
-    f1.max_force = 800.f;
-    f1.put_on_rectangle(32000, 32000, 50, 100);
+    f1.max_speed = 50.f;
+    f1.max_force = 100.f;
+    f1.put_on_rectangle(2500, 2500, 40, 50);
 
     CombinedBehavior cb{};
     cb.add(AtomicBehavior::Type::Cohesion,
-           {.cas = {.range = 25.f, .cos_fov = .5f}}, 15.f);
+           {.cas = {.range = 20.f, .cos_fov = -0.5f}}, 15.f);
     cb.add(AtomicBehavior::Type::Alignment,
-           {.cas = {.range = 30.f, .cos_fov = .8f}}, 15.f);
+           {.cas = {.range = 30.f, .cos_fov = .4f}}, 15.f);
     cb.add(AtomicBehavior::Type::Separation,
-           {.cas = {.range = 50.f, .cos_fov = 0.f}}, 50.f);
+           {.cas = {.range = 50.f, .cos_fov = -.5f}}, 10.f);
     cb.add(AtomicBehavior::Type::Wander,
            {.wander = {.sphere_dist = 100.f,
                        .sphere_radius = 90.f,
                        .displacement_amplitude = .5f}},
-           30.f);
+           5.f);
 
     AtomicBehavior steer{AtomicBehavior::Type::Arrival,
                          {.arrival = {.target = {400., 400.}, .range = 200.}},
@@ -50,10 +50,13 @@ int main() {
     sf::Vector2f position_précédente_souris_monde;
     //-_-_-_-_-_-_-_-_-_-_-_-_-_-_
     std::cout << "\x1B[31m";
+
+    ImGui::SFML::Init(window);
+
     while (window.isOpen()) {
         sf::Event event{};
         while (window.pollEvent(event)) {
-            // test.évènements_ihm(event);
+            ImGui::SFML::ProcessEvent(event);
             switch (event.type) {
             case sf::Event::MouseButtonPressed:
                 switch (event.mouseButton.button) {
@@ -148,9 +151,18 @@ int main() {
         w.update(dt);
         //-_-_-_-_-__-_-_-_-_-_-_-_--_-_DESSSIN
         window.draw(background);
-        f1.draw(window);
+        w.draw(window);
         // test.affichage_ihm(&w);
+
+        ImGui::SFML::Update(window, dt);
+        ImGui::ShowDemoWindow();
+        if (ImGui::Begin("Menu")) {
+            w.make_gui();
+        }
+        ImGui::End();
+        ImGui::SFML::Render(window);
         window.display();
+
         float fps = 1E6 / dt.asMicroseconds();
         fps_somme += fps;
         fps_compte++;

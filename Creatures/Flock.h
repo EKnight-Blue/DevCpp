@@ -23,6 +23,7 @@ public:
 
     float max_speed{0.f};
     float max_force{0.f};
+    void make_gui();
 
 private:
     void set_vertices();

@@ -78,6 +78,15 @@ void Flock::move(sf::Vector2f v) {
     }
 }
 
+void Flock::make_gui() {
+    if (ImGui::TreeNode(("Flock " + animal_names[static_cast<size_t>(animal)]).data())) {
+        ImGui::InputFloat("Size", &size);
+        ImGui::InputFloat("Max Speed", &max_speed);
+        ImGui::InputFloat("Max Force", &max_force);
+        ImGui::TreePop();
+    }
+}
+
 
 
 std::array<uint8_t const, TotalStates> const Flock::frame_number = {

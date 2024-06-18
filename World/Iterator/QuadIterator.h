@@ -5,14 +5,14 @@
 
 class QuadIterator : public NeighborIterator{
 public:
-    QuadIterator(FiniteWorld const *world, Animal animal, FlockMember const &member, float range, float cos_fov);
-    bool next(FlockMember &output_member) override;
+    QuadIterator(FiniteWorld *world, Animal animal, FlockMember const &member, float range, float cos_fov);
+    FlockMember* next() override;
 private:
     QuadTree const * current;
     float range;
     size_t element_index{0};
 
-    bool process_elements(FlockMember &output_member);
+    FlockMember * process_elements();
     bool propagate_to_children();
 };
 

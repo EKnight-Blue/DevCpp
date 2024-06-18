@@ -1,22 +1,26 @@
 #include "QuadIterator.h"
 
-QuadIterator::QuadIterator(FiniteWorld const *world, Animal animal, FlockMember const &member, float range, float cos_fov) :
+QuadIterator::QuadIterator(FiniteWorld *world, Animal animal, FlockMember const &member, float range, float cos_fov) :
         NeighborIterator(world, animal, member, range, cos_fov), current{&world->tree}, range{range} {
 
 }
 
-bool QuadIterator::process_elements(FlockMember &output_member) {
+FlockMember * QuadIterator::process_elements() {
+    FlockMember * result{nullptr};
     for (; element_index < current->cnt; ++element_index) {
         auto &element = current->elements[element_index];
         if (element.animal != animal)
             continue;
         if (test(element.position)) {
-            output_member = world->flocks[element.flock_index].members[element.member_index];
+            result = world->flocks[element.flock_index].members.data() + element.member_index;
+            if (result == &member) {
+                continue;
+            }
             ++element_index;
-            return true;
+            return result;
         }
     }
-    return false;
+    return result;
 }
 
 bool QuadIterator::propagate_to_children() {
@@ -29,10 +33,11 @@ bool QuadIterator::propagate_to_children() {
     return false;
 }
 
-bool QuadIterator::next(FlockMember &output_member) {
+FlockMember* QuadIterator::next() {
     while (true) {
-        if (process_elements(output_member))
-            return true;
+        FlockMember * result{process_elements()};
+        if (result)
+            return result;
         element_index = 0;
         if (propagate_to_children())
             continue;
@@ -51,6 +56,6 @@ bool QuadIterator::next(FlockMember &output_member) {
                 break;
         }
         if (!current->parent)
-            return false;
+            return nullptr;
     }
 }

@@ -7,15 +7,17 @@ public:
     FiniteWorld(float width, float height) : width{width}, height{height}, tree{{0.f, 0.f}, {width, height}, nullptr} {};
     [[nodiscard]] sf::Vector2f position_difference(sf::Vector2f const& v1, sf::Vector2f const & v2) const override;
     void update(sf::Time delta_time) override;
-    [[nodiscard]] std::unique_ptr<NeighborIterator> make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) const override;
+    [[nodiscard]] std::unique_ptr<NeighborIterator> make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) override;
 
-    void make_gui() override;
+    void make_sub_gui() override;
+    void draw(sf::RenderTarget & target) override;
 
 private:
     float width;
     float height;
     QuadTree tree;
     bool is_toroidal{true};
+    bool show_tree{false};
     friend class QuadIterator;
 
     void validate_toroidal_position(sf::Vector2f & point) const;

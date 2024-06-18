@@ -5,8 +5,8 @@
 
 class NaiveIterator : public NeighborIterator{
 public:
-    NaiveIterator(World const * world, Animal animal, FlockMember const &member, float range, float cos_fov);
-    bool next(FlockMember &output_member) override;
+    NaiveIterator(World * world, Animal animal, FlockMember const &member, float range, float cos_fov);
+    FlockMember* next() override;
 private:
     size_t flock_index{0};
     size_t member_index{0};
