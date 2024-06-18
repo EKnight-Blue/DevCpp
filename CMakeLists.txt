@@ -83,3 +83,29 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/resources
         ${RESOURCES}
         ${CMAKE_CURRENT_BINARY_DIR}/resources)
 add_dependencies(BoidSFML copy-resources)
+
+
+# enable_testing() must be in the source directory root (see cmake documentation at https://cmake.org/cmake/help/latest/ command/enable_testing.html)
+# Otherwise, Visual Studio test explorer does not see unit tests (See ticket https://developercommunity.visualstudio.com/t/No-tests-discovered-for-googletest-and-C/1148799#T-ND1150621)
+enable_testing()
+
+#
+# Include GoogleTest
+#
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+add_executable(tests
+        tests/test.cpp
+
+)
+
+target_link_libraries(tests GTest::gtest_main sfml-graphics)
+
+include(GoogleTest)
+gtest_discover_tests(tests)
