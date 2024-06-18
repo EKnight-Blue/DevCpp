@@ -2,7 +2,7 @@
 #include "Creatures/Flock.h"
 #include "World/FiniteWorld.h"
 #include "interface.h"
-#include <SFML/System/Clock.hpp>
+#include "SFML/System/Clock.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -132,6 +132,5 @@ int main() {
         }
         std::cout << "\x1B[2K\r" << fps << std::flush;
     }
-    std::cout << "\n moyenne : " << fps_somme / static_cast<float>(fps_compte) << "fps\x1B[0m"
-              << std::flush;
+    std::cout << "\nmoyenne : " << fps_somme / static_cast<float>(fps_compte) << "fps\x1B[0m" << std::flush;
 }

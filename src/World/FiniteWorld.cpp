@@ -1,9 +1,9 @@
 #include "FiniteWorld.h"
-#include "Iterator/QuadIterator.h"
+#include "World/Iterator/QuadIterator.h"
 #include "imgui-SFML.h"
 #include "imgui.h"
 #include <functional>
-#include "Iterator/NaiveIterator.h"
+#include "World/Iterator/NaiveIterator.h"
 
 /**
  * Make up for weird topologies

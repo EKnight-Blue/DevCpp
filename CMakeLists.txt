@@ -3,50 +3,50 @@ project(BoidSFML)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(BoidSFML main.cpp
-        Creatures/Flock.h
-        Creatures/Flock.cpp
-        Behavior/AtomicBehavior.h
-        Behavior/AtomicBehavior.cpp
-        Behavior/CombinedBehavior.h
-        Behavior/CombineBehavior.cpp
-        utils.h
-        utils.cpp
-        interface.h
-        interface.cpp
-        interface.cpp
-        World/Noise.h
-        World/Noise.cpp
-        World/World.h
-        World/World.h
-        Behavior/StatedBehavior.h
-        Behavior/StatedBehavior.cpp
-        World/World.cpp
-        Creatures/Animals.h
-        Creatures/FlockMember.h
-        Creatures/FlockMember.h
-        Behavior/Behavior.h
-        Creatures/Animals.cpp
-        World/QuadTree.h
-        World/QuadTree.h
-        World/QuadTree.cpp
-        World/QuadTree.cpp
-        World/FiniteWorld.h
-        World/FiniteWorld.h
-        World/Iterator/NeighborIterator.h
-        World/Iterator/NeighborIterator.cpp
-        World/Iterator/NeighborIterator.cpp
-        World/Iterator/NaiveIterator.h
-        World/Iterator/NaiveIterator.cpp
-        World/Iterator/NaiveIterator.cpp
-        World/Iterator/QuadIterator.h
-        World/Iterator/QuadIterator.h
-        World/Iterator/QuadIterator.cpp
-        World/FiniteWorld.cpp
-        World/FiniteWorld.cpp
-        World/FiniteWorld.cpp
+add_executable(BoidSFML src/main.cpp
+        src/Creatures/Flock.h
+        src/Creatures/Flock.cpp
+        src/Behavior/AtomicBehavior.h
+        src/Behavior/AtomicBehavior.cpp
+        src/Behavior/CombinedBehavior.h
+        src/Behavior/CombineBehavior.cpp
+        src/utils.h
+        src/utils.cpp
+        src/interface.h
+        src/interface.cpp
+        src/interface.cpp
+        src/World/Noise.h
+        src/World/Noise.cpp
+        src/World/World.h
+        src/World/World.h
+        src/Behavior/StatedBehavior.h
+        src/Behavior/StatedBehavior.cpp
+        src/World/World.cpp
+        src/Creatures/Animals.h
+        src/Creatures/FlockMember.h
+        src/Creatures/FlockMember.h
+        src/Behavior/Behavior.h
+        src/Creatures/Animals.cpp
+        src/World/QuadTree.h
+        src/World/QuadTree.h
+        src/World/QuadTree.cpp
+        src/World/QuadTree.cpp
+        src/World/FiniteWorld.h
+        src/World/FiniteWorld.h
+        src/World/Iterator/NeighborIterator.h
+        src/World/Iterator/NeighborIterator.cpp
+        src/World/Iterator/NeighborIterator.cpp
+        src/World/Iterator/NaiveIterator.h
+        src/World/Iterator/NaiveIterator.cpp
+        src/World/Iterator/NaiveIterator.cpp
+        src/World/Iterator/QuadIterator.h
+        src/World/Iterator/QuadIterator.h
+        src/World/Iterator/QuadIterator.cpp
+        src/World/FiniteWorld.cpp
+        src/World/FiniteWorld.cpp
+        src/World/FiniteWorld.cpp
 )
-target_include_directories(BoidSFML PUBLIC ${CMAKE_CURRENT_LIST_DIR})
+target_include_directories(BoidSFML PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 
 include(FetchContent)
 

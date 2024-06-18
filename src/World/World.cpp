@@ -1,6 +1,6 @@
 #include "World.h"
 #include "utils.h"
-#include "Iterator/NaiveIterator.h"
+#include "World/Iterator/NaiveIterator.h"
 #include "imgui-SFML.h"
 #include "imgui.h"
 #include "Behavior/CombinedBehavior.h"
