@@ -26,7 +26,7 @@ TEST(arbre_quaternaire, basique) {
 TEST(Tree, Iteration) {
     constexpr float W{800.f};
     FiniteWorld world{W, W};
-    constexpr int32_t nb{64};
+    constexpr int32_t nb{128};
     world.flocks.emplace_back(Animal::Bird, 20, nb, 0.f, 0.f);
 
     constexpr float increment{TWO_PI / static_cast<float>(nb)};
@@ -47,15 +47,12 @@ TEST(Tree, Iteration) {
     observer.position={W * 0.5f, W * 0.5f};
     angle = increment / 2.f;
     for (int include{0}; include < nb / 2; include++) {
-        std::cout << "Include = " << include << std::endl;
-
         std::unique_ptr<NeighborIterator> it = world.make_neighbor_iterator(Animal::Bird, observer, W * 0.5f, cosf(angle));
         int cnt = 0;
         for (FlockMember const *member{it->next()}; member; member = it->next()) {
             ++cnt;
-            std::cout << " " << std::distance(const_cast<FlockMember const *>(world.flocks[0].members.data()), member);
         }
-        std::cout << std::endl;
+        // very often off by one / can't figure out why / math certainly
         EXPECT_EQ(cnt, 2 * include + 1);
         angle = increment * (static_cast<float>(include+1) + .5f);
     }
