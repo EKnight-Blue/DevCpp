@@ -4,9 +4,9 @@
 
 constexpr uint16_t ANIMATION_FRAME_TIME_MS = 100;
 
-Flock::Flock(Animal const animal, const float size, const size_t nb_members) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members) {
-    texture.loadFromFile("./resources/texture.png");
+sf::Texture Flock::texture{};
 
+Flock::Flock(Animal const animal, const float size, const size_t nb_members) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members) {
     for (int index{0}; index < nb_members; ++index) {
         members[index].last_wander_angle = random_float() * TWO_PI;
         members[index].orientation = {
@@ -80,6 +80,7 @@ void Flock::move(sf::Vector2f v) {
 
 void Flock::make_gui() {
     if (ImGui::TreeNode(("Flock " + animal_names[static_cast<size_t>(animal)]).data())) {
+        ImGui::Text("Number of members: %d", members.size());
         ImGui::InputFloat("Size", &size);
         ImGui::InputFloat("Max Speed", &max_speed);
         ImGui::InputFloat("Max Force", &max_force);

@@ -6,6 +6,7 @@
 #include "Animals.h"
 #include "FlockMember.h"
 #include <array>
+#include <memory>
 
 class Flock {
 public:
@@ -18,7 +19,7 @@ public:
     Animal animal;
     float size;
     sf::VertexArray vertex_array;
-    sf::Texture texture;
+    static sf::Texture texture;
     std::vector<FlockMember> members;
 
     float max_speed{0.f};

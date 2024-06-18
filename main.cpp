@@ -6,12 +6,15 @@
 #include <SFML/System/Clock.hpp>
 #include <cmath>
 #include <iostream>
+
 long long int fps_somme = 0;
 long long int fps_compte = 0;
+
 int main() {
 #ifdef WIN32
     std::system("color");
 #endif
+    Flock::texture.loadFromFile("./resources/texture.png");
     sf::Texture texture;
     texture.loadFromFile("./resources/bg.jpg");
     sf::Sprite background(texture);
