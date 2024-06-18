@@ -21,7 +21,10 @@ class Flock {
     Animal animal;
     float size;
     sf::VertexArray vertex_array;
+
+    // could not be made static because of "reasons", magic segmentation fault on linux at loading time
     sf::Texture texture;
+
     std::vector<FlockMember> members;
 
     float max_speed{0.f};

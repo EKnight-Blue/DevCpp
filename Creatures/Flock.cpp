@@ -4,11 +4,9 @@
 
 constexpr uint16_t ANIMATION_FRAME_TIME_MS = 100;
 
-Flock::Flock(Animal const animal, const float size, const size_t nb_members,
-             float const max_speed, float const max_force)
-    : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members},
-      members(nb_members), max_speed{max_speed}, max_force{max_force},
-      texture{} {
+Flock::Flock(Animal const animal, const float size, const size_t nb_members, float const max_speed, float const max_force)
+    : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members), max_speed{max_speed},
+      max_force{max_force} {
     texture.loadFromFile("./resources/texture.png");
     for (int index{0}; index < nb_members; ++index) {
         members[index].position.x = 800.f * (random_float() - .5f);
@@ -22,8 +20,7 @@ Flock::Flock(Animal const animal, const float size, const size_t nb_members,
     }
 }
 
-void Flock::put_on_rectangle(float const width, float const height,
-                             const size_t columns, const size_t rows) {
+void Flock::put_on_rectangle(float const width, float const height, const size_t columns, const size_t rows) {
     for (size_t row{0}; row < rows; ++row) {
         for (size_t column{0}; column < columns; ++column) {
             members[row * columns + column].position = {
@@ -36,12 +33,22 @@ void Flock::put_on_rectangle(float const width, float const height,
     }
 }
 
+/**
+ * Draw itself on the window
+ * @param target
+ */
 void Flock::draw(sf::RenderTarget &target) {
     set_vertices();
     target.draw(vertex_array, &texture);
 }
 
+/**
+ * Process movement changes after steering is computed
+ * @param delta_time
+ * @param member
+ */
 void Flock::update(sf::Time const delta_time, FlockMember &member) const {
+    // for animation purposes
     member.age =
         (member.age + static_cast<uint16_t>(delta_time.asMilliseconds())) %
         (frame_number[accumulated_state_counts[static_cast<size_t>(animal)] +
@@ -49,6 +56,7 @@ void Flock::update(sf::Time const delta_time, FlockMember &member) const {
          ANIMATION_FRAME_TIME_MS);
     truncate(member.force, max_force);
 
+    // euler's integration for speed
     sf::Vector2f speed{member.speed * member.orientation +
                        delta_time.asSeconds() * member.force};
     member.force = {0., 0.};
@@ -56,37 +64,44 @@ void Flock::update(sf::Time const delta_time, FlockMember &member) const {
     member.speed = sqrtf(speed.x * speed.x + speed.y * speed.y);
     if (member.speed != 0.f)
         member.orientation = speed / member.speed;
+    // truncating the speed
     if (member.speed > max_speed)
         member.speed = max_speed;
 
+    // euler's integration for position
     member.position +=
         (delta_time.asSeconds() * member.speed) * member.orientation;
 }
 
+/**
+ * Prepare the rendering texture coordinates
+ */
 void Flock::set_vertices() {
+    // 4 corners of a rectangle
     static std::array<sf::Vector2f const, 4> const texture_anchors{
         {{0.f, 0.f}, {1.f, 0.f}, {1.f, 1.f}, {0.f, 1.f}}};
     for (int index{0}; index < members.size(); ++index) {
         sf::Vector2f member_position = members[index].position;
         float state{static_cast<float>(members[index].state)};
-        float age{
-            static_cast<float>(members[index].age / ANIMATION_FRAME_TIME_MS)};
+        float age{static_cast<float>(members[index].age / ANIMATION_FRAME_TIME_MS)};
         for (int j{0}; j < 4; ++j) {
-            vertex_array[4 * index + j].position =
-                member_position +
-                size * (sf::Vector2f{-.5f, -1.f} + texture_anchors[j]) *
-                    sf::Vector2f{
-                        1.f - 2.f * static_cast<float>(
-                                        members[index].orientation.x < 0.),
-                        1.f};
+            vertex_array[4 * index + j].position = member_position + size * (
+                    // Position the points relative to the mid-bottom the image
+                    sf::Vector2f{-.5f, -1.f} + texture_anchors[j]
+            // Horizontal flipping according the orientation
+            ) * sf::Vector2f{(members[index].orientation.x < 0.) ? -1.f : 1.f ,1.f};
             vertex_array[4 * index + j].texCoords =
+                // Point to where the animal is on the texture
                 anchor[static_cast<size_t>(animal)] +
-                (sf::Vector2f{age, state} + texture_anchors[j]) *
-                    frame_size[static_cast<size_t>(animal)];
+                // state-th row, age-th column
+                (sf::Vector2f{age, state} + texture_anchors[j]) * frame_size[static_cast<size_t>(animal)];
         }
     }
 }
-
+/**
+ * Displace the whole flock
+ * @param v
+ */
 void Flock::move(sf::Vector2f v) {
     for (auto &member : members) {
         member.position += v;
