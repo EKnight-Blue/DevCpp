@@ -6,12 +6,12 @@
 
 class NeighborIterator{
 public:
-    NeighborIterator(World * world, Animal animal, FlockMember const& member, float range, float cos_fov);
+    NeighborIterator(World const *world, Animal animal, FlockMember const& member, float range, float cos_fov);
     virtual ~NeighborIterator() = default;
-    virtual FlockMember * next() = 0;
+    virtual FlockMember const * next() = 0;
 protected:
     [[nodiscard]] bool test(const sf::Vector2f &position) const;
-    World * world;
+    World const * world;
     Animal const animal;
     FlockMember const& member;
     float const sq_range;

@@ -5,7 +5,7 @@
 #include "imgui.h"
 #include "Behavior/CombinedBehavior.h"
 
-std::unique_ptr<NeighborIterator> World::make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) {
+std::unique_ptr<NeighborIterator> World::make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) const {
     return std::make_unique<NaiveIterator>(this, animal, member, range, cos_fov);
 }
 

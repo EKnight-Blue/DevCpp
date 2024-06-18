@@ -6,12 +6,25 @@
 #include "imgui.h"
 #include "World/Iterator/NeighborIterator.h"
 
-void AtomicBehavior::update_values(const Parameters &new_data, const float c) {
+/**
+ * Generic setter
+ * @param new_data Parameters set according to the Type
+ * @param new_coefficient
+ */
+void AtomicBehavior::update_values(Parameters const &new_data, const float new_coefficient) {
     parameters = new_data;
-    coefficient = c;
+    coefficient = new_coefficient;
 }
 
-
+/**
+ * Internal sub-function that computes seek behavior;
+ * It is used by other behaviors
+ *
+ * @param flock Flock holding the current member
+ * @param member Member for which the behavior is being computed
+ * @param desired_velocity
+ * @return
+ */
 sf::Vector2f sub_seek(Flock const& flock, FlockMember const& member, sf::Vector2f desired_velocity) {
     float const old_mag = magnitude(desired_velocity);
     if (old_mag == 0.f) {
@@ -21,87 +34,136 @@ sf::Vector2f sub_seek(Flock const& flock, FlockMember const& member, sf::Vector2
     }
 }
 
-
-void AtomicBehavior::seek(Flock const& flock, FlockMember &member, World *world) const {
+/**
+ * Constantly drive towards a point (at max speed)
+ * @param flock
+ * @param member
+ * @param world
+ */
+void AtomicBehavior::seek(Flock const& flock, FlockMember &member, World const *world) const {
+    // try to go to the target
     sf::Vector2f desired_velocity = world->position_difference(parameters.seek_flee.target, member.position);
     member.force += coefficient * sub_seek(flock, member, desired_velocity);
 }
 
-
-void AtomicBehavior::flee(Flock const& flock, FlockMember &member, World *world) const {
+/**
+ * Constantly drive away from a point
+ * @param flock
+ * @param member
+ * @param world
+ */
+void AtomicBehavior::flee(Flock const& flock, FlockMember &member, World const *world) const {
+    // try to go away from the target
     sf::Vector2f desired_velocity = world->position_difference(member.position, parameters.seek_flee.target);
     member.force += coefficient * sub_seek(flock, member, desired_velocity);
 }
 
-void AtomicBehavior::arrival(Flock const& flock, FlockMember &member, World *world) const {
+/**
+ * Constantly drive towards a point (and slow down when close)
+ * @param flock
+ * @param member
+ * @param world
+ */
+void AtomicBehavior::arrival(Flock const& flock, FlockMember &member, World const *world) const {
+    // try to go to the target
     sf::Vector2f desired_velocity = world->position_difference(parameters.arrival.target, member.position);
     float const old_mag = magnitude(desired_velocity);
     if (old_mag < parameters.arrival.range) {
+        // arrive at reasonable speed
         member.force += coefficient * (desired_velocity * (flock.max_speed / parameters.arrival.range) - member.speed * member.orientation);
     } else {
+        // rush the target
         member.force += coefficient * (desired_velocity * (flock.max_speed / old_mag) - member.speed * member.orientation);
     }
 }
 
-
-void AtomicBehavior::cohesion(Flock const& flock, FlockMember &member, World *world) const {
+/**
+ * Make members stay together
+ * @param flock
+ * @param member
+ * @param world
+ */
+void AtomicBehavior::cohesion(Flock const& flock, FlockMember &member, World const *world) const {
     sf::Vector2f desired_velocity{0., 0.};
     size_t neighbor_cnt = 0;
 
     auto it = world->make_neighbor_iterator(flock.animal, member, parameters.cas.range, parameters.cas.cos_fov);
     for (FlockMember const * neighbor = it->next(); neighbor; neighbor = it->next()) {
         ++neighbor_cnt;
+        // average position of neighbors
         desired_velocity += world->position_difference(neighbor->position, member.position);
     }
     if (!neighbor_cnt) {
         return;
     }
-
+    // try to go to the average neighbor position
     member.force += coefficient * sub_seek(flock, member, desired_velocity / static_cast<float>(neighbor_cnt));
 }
 
-
-void AtomicBehavior::alignment(Flock const& flock, FlockMember &member, World *world) const {
+/**
+ * Make members want to have the same speed as their mates
+ * @param flock
+ * @param member
+ * @param world
+ */
+void AtomicBehavior::alignment(Flock const& flock, FlockMember &member, World const *world) const {
     sf::Vector2f desired_velocity{0., 0.};
     size_t neighbor_cnt = 0;
 
     auto it = world->make_neighbor_iterator(flock.animal, member, parameters.cas.range, parameters.cas.cos_fov);
     for (FlockMember const * neighbor = it->next(); neighbor; neighbor = it->next()) {
+        // average speed of neighbors
         desired_velocity += neighbor->speed * neighbor->orientation;
         ++neighbor_cnt;
     }
     if (!neighbor_cnt) {
-        // 0., 0.
         return;
     }
     member.force += coefficient * sub_seek(flock, member, desired_velocity / static_cast<float>(neighbor_cnt));
 }
 
-
-void AtomicBehavior::separation(Flock const& flock, FlockMember &member, World *world) const {
+/**
+ * Keep member not too close to one another
+ * @param flock
+ * @param member
+ * @param world
+ */
+void AtomicBehavior::separation(Flock const& flock, FlockMember &member, World const *world) const {
     sf::Vector2f force{0., 0.};
     auto it = world->make_neighbor_iterator(flock.animal, member, parameters.cas.range, parameters.cas.cos_fov);
     for (FlockMember const * neighbor = it->next(); neighbor; neighbor = it->next()) {
         sf::Vector2f vec = world->position_difference(member.position, neighbor->position);
         float sq_mag = sq_magnitude(vec);
         if (0.f != sq_mag)
+            // 1/r repulsion
             force += vec / sq_mag;
     }
     member.force += (coefficient * parameters.cas.range) * force;
 }
 
-
-void AtomicBehavior::wander([[maybe_unused]] Flock const &flock, FlockMember &member, [[maybe_unused]] World *world) const {
+/**
+ * Random walk, chooses a random point on a circle placed in front of the member
+ * @param flock
+ * @param member
+ * @param world
+ */
+void AtomicBehavior::wander([[maybe_unused]] Flock const &flock, FlockMember &member, [[maybe_unused]] World const *world) const {
     member.last_wander_angle += (2.f * random_float() - 1.f) * parameters.wander.displacement_amplitude;
     member.force += coefficient * member.orientation * parameters.wander.sphere_dist + parameters.wander.sphere_radius * sf::Vector2f{cosf(member.last_wander_angle), sinf(member.last_wander_angle)};
 }
 
-
-void AtomicBehavior::pursuit([[maybe_unused]] Flock const &flock, [[maybe_unused]] FlockMember &member, [[maybe_unused]] World *world) const {
+/**
+ * Follow other animals of a certain type
+ * @param flock
+ * @param member
+ * @param world
+ */
+void AtomicBehavior::pursuit([[maybe_unused]] Flock const &flock, [[maybe_unused]] FlockMember &member, [[maybe_unused]] World const *world) const {
     auto it = world->make_neighbor_iterator(parameters.pursuit_evasion.animal, member, parameters.pursuit_evasion.fov.range, parameters.pursuit_evasion.fov.cos_fov);
 
     FlockMember const * best{nullptr};
     float best_dist{HUGE_VALF};
+    // chose the closest member of the targeted animal
     for (FlockMember const * neighbor = it->next(); neighbor; neighbor = it->next()) {
         float dist{magnitude(world->position_difference(neighbor->position, member.position))};
         if (dist < best_dist){
@@ -111,6 +173,7 @@ void AtomicBehavior::pursuit([[maybe_unused]] Flock const &flock, [[maybe_unused
     }
     if (!best)
         return;
+    // steer towards the animal
     sf::Vector2f vec = world->position_difference(
     best->position + (best->speed * parameters.pursuit_evasion.prediction_time) * best->orientation,
     member.position
@@ -118,12 +181,18 @@ void AtomicBehavior::pursuit([[maybe_unused]] Flock const &flock, [[maybe_unused
     member.force += coefficient * sub_seek(flock, member, vec);
 }
 
-
-void AtomicBehavior::evasion([[maybe_unused]] Flock const &flock, [[maybe_unused]] FlockMember &member, [[maybe_unused]]World *world) const {
+/**
+ * Flee other animals of a certain type
+ * @param flock
+ * @param member
+ * @param world
+ */
+void AtomicBehavior::evasion([[maybe_unused]] Flock const &flock, [[maybe_unused]] FlockMember &member, [[maybe_unused]]World const *world) const {
     auto it = world->make_neighbor_iterator(parameters.pursuit_evasion.animal, member, parameters.pursuit_evasion.fov.range, parameters.pursuit_evasion.fov.cos_fov);
 
     FlockMember const *best{nullptr};
     float best_dist{HUGE_VALF};
+    // chose the closest member of the targeted animal
     for (FlockMember const * neighbor = it->next(); neighbor; neighbor = it->next()) {
         float dist{magnitude(world->position_difference(neighbor->position, member.position))};
         if (dist < best_dist){
@@ -133,14 +202,15 @@ void AtomicBehavior::evasion([[maybe_unused]] Flock const &flock, [[maybe_unused
     }
     if (!best)
         return;
+    // steer away from the animal
     sf::Vector2f vec = world->position_difference(
-            member.position,
-            best->position + (best->speed * parameters.pursuit_evasion.prediction_time) * best->orientation
+    member.position,
+    best->position + (best->speed * parameters.pursuit_evasion.prediction_time) * best->orientation
     );
     member.force += coefficient * sub_seek(flock, member, vec);
 }
 
-void AtomicBehavior::compute_body(Flock& flock, FlockMember& member, World * world) {
+void AtomicBehavior::compute_body(Flock& flock, FlockMember& member, World const * world) {
     static std::array<BehaviorMethod, static_cast<size_t>(Type::Count)> behaviors{
         &AtomicBehavior::seek,
         &AtomicBehavior::flee,
@@ -152,6 +222,7 @@ void AtomicBehavior::compute_body(Flock& flock, FlockMember& member, World * wor
         &AtomicBehavior::pursuit,
         &AtomicBehavior::evasion
     };
+    // select the method that matches Type
     BehaviorMethod const method = behaviors[static_cast<size_t>(type)];
     std::invoke(method, this, flock, member, world);
 }
@@ -216,6 +287,7 @@ void AtomicBehavior::make_gui() {
     };
     if(ImGui::TreeNode(names[static_cast<size_t>(type)].data())) {
         ImGui::InputFloat("Coefficient", &coefficient);
+        // select the method that matches Type
         std::invoke(guis[static_cast<size_t>(type)], this);
         ImGui::TreePop();
     }

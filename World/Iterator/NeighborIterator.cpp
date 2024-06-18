@@ -1,7 +1,7 @@
 #include "NeighborIterator.h"
 #include "utils.h"
 
-NeighborIterator::NeighborIterator(World * const world, Animal const animal, FlockMember const &member, float const range, float const cos_fov) :
+NeighborIterator::NeighborIterator(World const *world, Animal animal, FlockMember const &member, float range, float cos_fov) :
         world{world}, animal{animal}, member{member}, sq_range{range * range}, cos_fov{cos_fov} {
 }
 

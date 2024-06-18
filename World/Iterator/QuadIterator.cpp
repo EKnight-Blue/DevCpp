@@ -1,12 +1,12 @@
 #include "QuadIterator.h"
 
-QuadIterator::QuadIterator(FiniteWorld *world, Animal animal, FlockMember const &member, float range, float cos_fov) :
+QuadIterator::QuadIterator(FiniteWorld const *world, Animal animal, FlockMember const &member, float range, float cos_fov) :
         NeighborIterator(world, animal, member, range, cos_fov), current{&world->tree}, range{range} {
 
 }
 
-FlockMember * QuadIterator::process_elements() {
-    FlockMember * result{nullptr};
+FlockMember const * QuadIterator::process_elements() {
+    FlockMember const * result{nullptr};
     for (; element_index < current->cnt; ++element_index) {
         auto &element = current->elements[element_index];
         if (element.animal != animal)
@@ -33,9 +33,9 @@ bool QuadIterator::propagate_to_children() {
     return false;
 }
 
-FlockMember* QuadIterator::next() {
+FlockMember const * QuadIterator::next() {
     while (true) {
-        FlockMember * result{process_elements()};
+        FlockMember const * result{process_elements()};
         if (result)
             return result;
         element_index = 0;

@@ -19,7 +19,7 @@ public:
 
     virtual void draw(sf::RenderTarget &target);
 
-    [[nodiscard]] virtual std::unique_ptr<NeighborIterator> make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov);
+    [[nodiscard]] virtual std::unique_ptr<NeighborIterator> make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) const;
     std::vector<Flock> flocks{};
     std::vector<CombinedBehavior> behaviors;
     friend NeighborIterator;

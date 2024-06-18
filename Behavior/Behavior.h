@@ -6,7 +6,12 @@
 class World;
 class Behavior{
 public:
-    void compute(Flock& flock, World* world) {
+    /**
+     * Compute behavior on the whole flock
+     * @param flock
+     * @param world
+     */
+    void compute(Flock& flock, World const *world) {
         for (auto& member : flock.members) {
             compute_body(flock, member, world);
         }
@@ -14,7 +19,13 @@ public:
     virtual ~Behavior() = default;
     virtual void make_gui() = 0;
 private:
-    virtual void compute_body(Flock& flock, FlockMember& member, World * world) = 0;
+    /**
+     * Compute behavior on one member
+     * @param flock
+     * @param member
+     * @param world
+     */
+    virtual void compute_body(Flock& flock, FlockMember& member, World const * world) = 0;
 };
 
 #endif //BOIDSFML_BEHAVIOR_H

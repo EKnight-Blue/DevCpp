@@ -8,7 +8,7 @@
 
 class StatedBehavior : public Behavior{
 private:
-    void compute_body(Flock& flock, FlockMember& member, World * world) override;
+    void compute_body(Flock& flock, FlockMember& member, World const * world) override;
     std::vector<CombinedBehavior> behaviors;
 };
 
