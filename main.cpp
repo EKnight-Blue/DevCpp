@@ -20,12 +20,12 @@ int main() {
     sf::Sprite background(texture);
     sf::RenderWindow window{sf::VideoMode{800, 800}, "Game"};
     sf::View vue = window.getDefaultView();
-    window.setFramerateLimit(30);
+    window.setFramerateLimit(0);
     // Ihm test{&window};
     FiniteWorld w{1600.f, 1600.f};
     w.flocks.emplace_back(Animal::Bird, 20.f, 2000, 50.f, 100.f);
     Flock &f1{w.flocks[0]};
-    f1.put_on_rectangle(2500, 2500, 40, 50);
+    f1.move({800.f, 800.f});
 
     CombinedBehavior cb{};
     cb.add(AtomicBehavior::Type::Cohesion,

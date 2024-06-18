@@ -54,7 +54,6 @@ void new_flock(World* world) {
         world->flocks.emplace_back(
                 animal, size, count, max_speed, max_force
         );
-        world->flocks.rbegin()->put_on_rectangle(500.f, 0.f, count, 1);
     }
     ImGui::TreePop();
 }
@@ -68,8 +67,11 @@ void World::make_sub_gui() {
             flock.make_gui();
             ImGui::PopID();
         }
-
+        ImGui::PushID(id);
+        ++id;
+        new_flock(this);
         ImGui::TreePop();
+        ImGui::PopID();
     }
 }
 
