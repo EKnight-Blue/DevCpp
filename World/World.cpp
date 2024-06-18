@@ -3,6 +3,7 @@
 #include "Iterator/NaiveIterator.h"
 #include "imgui-SFML.h"
 #include "imgui.h"
+#include "Behavior/CombinedBehavior.h"
 
 std::unique_ptr<NeighborIterator> World::make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) {
     return std::make_unique<NaiveIterator>(this, animal, member, range, cos_fov);
@@ -25,7 +26,7 @@ void World::make_gui() {
     }
 }
 
-void new_flock(World* world) {
+void World::new_flock() {
     if (!ImGui::TreeNode("New Flock"))
         return;
 
@@ -51,9 +52,10 @@ void new_flock(World* world) {
     ImGui::InputFloat("Max Force", &max_force);
 
     if (ImGui::Button("Create")) {
-        world->flocks.emplace_back(
+        flocks.emplace_back(
                 animal, size, count, max_speed, max_force
         );
+        behaviors.emplace_back();
     }
     ImGui::TreePop();
 }
@@ -61,15 +63,16 @@ void new_flock(World* world) {
 void World::make_sub_gui() {
     if (ImGui::TreeNode("Flocks")) {
         int id{0};
-        for (auto &flock: flocks) {
+        for (size_t index{0}; index < flocks.size(); ++index) {
             ImGui::PushID(id);
             ++id;
-            flock.make_gui();
+            flocks[index].make_gui();
+            behaviors[index].make_gui();
             ImGui::PopID();
         }
         ImGui::PushID(id);
         ++id;
-        new_flock(this);
+        new_flock();
         ImGui::TreePop();
         ImGui::PopID();
     }
@@ -78,5 +81,11 @@ void World::make_sub_gui() {
 void World::draw(sf::RenderTarget &target) {
     for (auto& flock : flocks) {
         flock.draw(target);
+    }
+}
+
+void World::process_behaviors() {
+    for (size_t index{0}; index < flocks.size(); ++index) {
+        behaviors[index].compute(flocks[index], this);
     }
 }

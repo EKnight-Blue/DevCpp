@@ -1,8 +1,9 @@
 #ifndef BOIDSFML_BEHAVIOR_H
 #define BOIDSFML_BEHAVIOR_H
 
-#include "World/World.h"
+#include "Creatures/Flock.h"
 
+class World;
 class Behavior{
 public:
     void compute(Flock& flock, World* world) {
