@@ -40,7 +40,7 @@ TEST(arbre_quaternaire, agrandissement) {
 TEST(Tree, Iteration) {
     constexpr float W{800.f};
     FiniteWorld world{W, W};
-    constexpr int32_t nb{1024};
+    constexpr int32_t nb{8096};
     world.flocks.emplace_back(Animal::Bird, 20, nb, 0.f, 0.f);
 
     constexpr float increment{TWO_PI / static_cast<float>(nb)};
@@ -66,7 +66,6 @@ TEST(Tree, Iteration) {
         for (FlockMember const *member{it->next()}; member; member = it->next()) {
             ++cnt;
         }
-        // very often off by one / can't figure out why / math certainly
         EXPECT_EQ(cnt, 2 * include + 1);
         angle = increment * (static_cast<float>(include+1) + .5f);
     }
