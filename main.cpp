@@ -30,7 +30,7 @@ int main() {
 
     auto cb{w.behaviors.begin()};
     cb->add(AtomicBehavior::Type::Cohesion,
-           {.cas = {.range = 20.f, .cos_fov = -0.5f}}, 15.f);
+           {.cas = {.range = 40.f, .cos_fov = -0.5f}}, 15.f);
     cb->add(AtomicBehavior::Type::Alignment,
            {.cas = {.range = 30.f, .cos_fov = .4f}}, 15.f);
     cb->add(AtomicBehavior::Type::Separation,

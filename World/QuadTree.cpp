@@ -5,11 +5,18 @@
 QuadTree::QuadTree(sf::Vector2f const top_left, sf::Vector2f const bottom_right, QuadTree * parent) : top_left(top_left), bottom_right(bottom_right), center{0.5f * (top_left + bottom_right)}, parent{parent} {
 
 }
-
+/**
+ * Chose the right child to put requested point
+ * @param point
+ * @return
+ */
 size_t QuadTree::chose_quadrant(const sf::Vector2f &point) const {
     return static_cast<size_t>(point.x >= center.x) | (static_cast<size_t>(point.y >= center.y) << 1);
 }
 
+/**
+ * Create the 4 children
+ */
 void QuadTree::divide() {
     children.emplace_back(top_left, center, this); // NW
     children.emplace_back(sf::Vector2f{center.x, top_left.y}, sf::Vector2f{bottom_right.x, center.y}, this); // NE
@@ -17,6 +24,10 @@ void QuadTree::divide() {
     children.emplace_back(center, bottom_right, this); // SE
 }
 
+/**
+ * Put an element into the structure
+ * @param element
+ */
 void QuadTree::insert(const QuadTreeElement &element) {
     if (cnt < QuadTreeSize) {
         elements[cnt] = element;
@@ -28,6 +39,11 @@ void QuadTree::insert(const QuadTreeElement &element) {
     children[chose_quadrant(element.position)].insert(element);
 }
 
+/**
+ * Only called by the root, destroy every children, and invalidates elements data
+ * @param width
+ * @param height
+ */
 void QuadTree::reset(float width, float height) {
     cnt = 0;
     center.x = width * .5f;
@@ -37,6 +53,14 @@ void QuadTree::reset(float width, float height) {
     children.clear();
 }
 
+/**
+ * Process intersections of a line of the F.O.V. with the lines of the rectangle
+ * @param v1
+ * @param v2
+ * @param sq_radius
+ * @param director
+ * @return
+ */
 bool QuadTree::line_line(sf::Vector2f const &v1, sf::Vector2f const &v2, float sq_radius, sf::Vector2f const &director) const {
     if (director.x != 0.f) {
         float t{v1.x / director.x};
@@ -61,6 +85,15 @@ bool QuadTree::line_line(sf::Vector2f const &v1, sf::Vector2f const &v2, float s
     return false;
 }
 
+/**
+ * Process the intersection of the F.O.V. arc with the lines of the rectangle
+ * @param v1
+ * @param v2
+ * @param sq_radius
+ * @param cos_fov
+ * @param orientation
+ * @return
+ */
 bool QuadTree::arc_line(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq_radius, float cos_fov, const sf::Vector2f &orientation) const {
     if (v1.x * v1.x < sq_radius) {
         float dy{sqrtf(sq_radius - v1.x * v1.x)};
@@ -89,7 +122,15 @@ bool QuadTree::arc_line(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq
     return false;
 }
 
-
+/**
+ * Check whether the rectangle is completely inside the F.O.V. when all other tests have failed
+ * @param v1
+ * @param v2
+ * @param sq_radius
+ * @param cos_fov
+ * @param orientation
+ * @return
+ */
 bool QuadTree::completely_inside(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq_radius, float cos_fov, const sf::Vector2f &orientation) {
     float m{sq_magnitude(v1)};
     if (!(m < sq_radius && dot(orientation, v1) >= cos_fov * sqrtf(m)))
@@ -125,6 +166,10 @@ bool QuadTree::intersects_fov(const sf::Vector2f &point, const sf::Vector2f &ori
     return completely_inside(v1, v2, sq_radius, cos_fov, orientation);
 }
 
+/**
+ * For visual test purposes
+ * @param target
+ */
 void QuadTree::draw(sf::RenderTarget &target) {
     static sf::RectangleShape shape{};
     shape.setPosition(top_left);

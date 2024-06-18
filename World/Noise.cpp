@@ -1,6 +1,5 @@
 #include "Noise.h"
 
-
 Toroidal4::Toroidal4(std::unique_ptr<Noise<4>> noise, const float rad1, const float rad2, const float x_period, const float y_period) :
     noise{std::move(noise)},
     rad1{rad1}, rad2{rad2},

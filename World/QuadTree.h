@@ -15,8 +15,8 @@ constexpr size_t QuadTreeSize = 8;
 struct QuadTreeElement{
     Animal animal;
     sf::Vector2f position;
-    uint32_t flock_index;
-    uint32_t member_index;
+    uint16_t flock_index;
+    uint16_t member_index;
 };
 
 class World;

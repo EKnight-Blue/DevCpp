@@ -256,6 +256,9 @@ constexpr float normalize_simplex4(const float n) {
     return value + .5f;
 }
 
+/**
+ * Noise for a toroidal world without distortions
+ */
 class Toroidal4 : public Noise<2> {
 public:
     explicit Toroidal4(std::unique_ptr<Noise<4>> noise, float rad1, float rad2, float x_period, float y_period);

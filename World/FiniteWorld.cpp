@@ -5,9 +5,16 @@
 #include <functional>
 #include "Iterator/NaiveIterator.h"
 
+/**
+ * Make up for weird topologies
+ * @param v1
+ * @param v2
+ * @return
+ */
 sf::Vector2f FiniteWorld::position_difference(sf::Vector2f const &v1, sf::Vector2f const &v2) const {
     sf::Vector2f v{v1.x - v2.x, v1.y - v2.y};
     if (is_toroidal) {
+        // wrap around if possible
         if (v.x < -width * .5f)
             v.x += width;
         else if (v.x > width * .5f)
@@ -20,6 +27,10 @@ sf::Vector2f FiniteWorld::position_difference(sf::Vector2f const &v1, sf::Vector
     return v;
 }
 
+/**
+ * Stick objects to the walls if they go out
+ * @param point
+ */
 void FiniteWorld::validate_normal_position(sf::Vector2f &point) const {
     point.x = (0.f > point.x) ? 0.f : point.x;
     point.y = (0.f > point.y) ? 0.f : point.y;
@@ -27,6 +38,10 @@ void FiniteWorld::validate_normal_position(sf::Vector2f &point) const {
     point.y = (height < point.y) ? height : point.y;
 }
 
+/**
+ * Teleport objects to the "other side" if the go out
+ * @param point
+ */
 void FiniteWorld::validate_toroidal_position(sf::Vector2f &point) const {
     if (point.x < 0.f)
         point.x += width;
@@ -38,7 +53,10 @@ void FiniteWorld::validate_toroidal_position(sf::Vector2f &point) const {
         point.y -= height;
 }
 
-
+/**
+ * Process position changes for every flock, rebuild the quad tree
+ * @param delta_time
+ */
 void FiniteWorld::update(sf::Time delta_time) {
     static std::array<void (FiniteWorld::*)(sf::Vector2f&) const, 2> validators{
         &FiniteWorld::validate_normal_position,
@@ -46,9 +64,9 @@ void FiniteWorld::update(sf::Time delta_time) {
     };
     auto validator = validators[is_toroidal];
     tree.reset(width, height);
-    for (uint32_t flock_index{0}; flock_index < flocks.size(); ++flock_index) {
+    for (uint16_t flock_index{0}; flock_index < flocks.size(); ++flock_index) {
         Flock& flock{flocks[flock_index]};
-        for (uint32_t member_index{0}; member_index < flock.members.size(); ++member_index) {
+        for (uint16_t member_index{0}; member_index < flock.members.size(); ++member_index) {
             FlockMember& member{flock.members[member_index]};
             flock.update(delta_time, member);
             std::invoke(validator, this, member.position);
@@ -64,7 +82,7 @@ void FiniteWorld::update(sf::Time delta_time) {
 }
 
 std::unique_ptr<NeighborIterator> FiniteWorld::make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) const {
-    return std::make_unique<NaiveIterator>(this, animal, member, range, cos_fov);
+    return std::make_unique<QuadIterator>(this, animal, member, range, cos_fov);
 }
 
 

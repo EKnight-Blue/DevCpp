@@ -17,8 +17,6 @@ add_executable(BoidSFML main.cpp
         interface.cpp
         World/Noise.h
         World/Noise.cpp
-        World/VectorField.h
-        World/VectorField.cpp
         World/World.h
         World/World.h
         Behavior/StatedBehavior.h
