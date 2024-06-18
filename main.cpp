@@ -14,7 +14,6 @@ int main() {
 #ifdef WIN32
     std::system("color");
 #endif
-    Flock::texture.loadFromFile("./resources/texture.png");
     sf::Texture texture;
     texture.loadFromFile("./resources/bg.jpg");
     sf::Sprite background(texture);
@@ -171,5 +170,6 @@ int main() {
         }
         std::cout << "\x1B[2K\r" << fps << std::flush;
     }
-    std::cout << "\n moyenne : " << fps_somme / fps_compte << "fps\x1B[0m" << std::flush;
+    std::cout << "\n moyenne : " << fps_somme / fps_compte << "fps\x1B[0m"
+              << std::flush;
 }
