@@ -9,7 +9,10 @@ std::unique_ptr<NeighborIterator> World::make_neighbor_iterator(Animal animal, F
     return std::make_unique<NaiveIterator>(this, animal, member, range, cos_fov);
 }
 
-
+/**
+ * Propagate update on the flocks
+ * @param delta_time
+ */
 void World::update(sf::Time delta_time) {
     for (auto& flock : flocks) {
         for (auto& member : flock.members){
