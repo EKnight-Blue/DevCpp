@@ -112,8 +112,8 @@ int main() {
     while (window.isOpen()) {
         handle_events(window);
         window.clear(sf::Color::White);
+        //_-_-_-_-_-_-_-_-_-__-_-_-_-_-_-_SIMULATION
         dt = c.restart();
-
         w.process_behaviors();
         w.update(dt);
         //-_-_-_-_-__-_-_-_-_-_-_-_--_-_DESSSIN
@@ -126,9 +126,11 @@ int main() {
         ImGui::End();
         ImGui::SFML::Render(window);
         window.display();
-
+        //-_-_-_-__-_-_-_-_-__-_-_-_-_-_- affichage fps dans la console
         float fps = 1E6f / static_cast<float>(dt.asMicroseconds());
         if (fps < 90.f) {
+            // au lancement du programme les fps sont extrèmements élevés et
+            // faussent la moyenne
             fps_somme += fps;
             fps_compte++;
         }
