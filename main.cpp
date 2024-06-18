@@ -23,10 +23,8 @@ int main() {
     window.setFramerateLimit(30);
     // Ihm test{&window};
     FiniteWorld w{1600.f, 1600.f};
-    w.flocks.emplace_back(Animal::Bird, 20.f, 2000);
+    w.flocks.emplace_back(Animal::Bird, 20.f, 2000, 50.f, 100.f);
     Flock &f1{w.flocks[0]};
-    f1.max_speed = 50.f;
-    f1.max_force = 100.f;
     f1.put_on_rectangle(2500, 2500, 40, 50);
 
     CombinedBehavior cb{};

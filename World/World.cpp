@@ -25,12 +25,50 @@ void World::make_gui() {
     }
 }
 
+void new_flock(World* world) {
+    if (!ImGui::TreeNode("New Flock"))
+        return;
+
+    static Animal animal{Animal::Squirrel};
+    if (ImGui::BeginListBox("Animal")) {
+        for (size_t index{0}; index < static_cast<size_t>(Animal::Count); ++index) {
+            if(ImGui::Selectable(animal_names[index].data(), static_cast<Animal>(index) == animal)) {
+                animal = static_cast<Animal>(index);
+            }
+        }
+        ImGui::EndListBox();
+    }
+    static int count{100};
+    ImGui::InputInt("Number of members", &count);
+    if (count < 0) {
+        count = 0;
+    }
+    static float size;
+    static float max_speed;
+    static float max_force;
+    ImGui::InputFloat("Size", &size);
+    ImGui::InputFloat("Max Speed", &max_speed);
+    ImGui::InputFloat("Max Force", &max_force);
+
+    if (ImGui::Button("Create")) {
+        world->flocks.emplace_back(
+                animal, size, count, max_speed, max_force
+        );
+        world->flocks.rbegin()->put_on_rectangle(500.f, 0.f, count, 1);
+    }
+    ImGui::TreePop();
+}
+
 void World::make_sub_gui() {
     if (ImGui::TreeNode("Flocks")) {
+        int id{0};
         for (auto &flock: flocks) {
+            ImGui::PushID(id);
+            ++id;
             flock.make_gui();
+            ImGui::PopID();
         }
-        if (ImGui::Button("Add Flock")) {}
+
         ImGui::TreePop();
     }
 }

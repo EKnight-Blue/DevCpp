@@ -6,7 +6,7 @@ constexpr uint16_t ANIMATION_FRAME_TIME_MS = 100;
 
 sf::Texture Flock::texture{};
 
-Flock::Flock(Animal const animal, const float size, const size_t nb_members) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members) {
+Flock::Flock(Animal const animal, const float size, const size_t nb_members, float const max_speed, float const max_force) : animal{animal}, size{size}, vertex_array{sf::Quads, 4 * nb_members}, members(nb_members), max_speed{max_speed}, max_force{max_force} {
     for (int index{0}; index < nb_members; ++index) {
         members[index].last_wander_angle = random_float() * TWO_PI;
         members[index].orientation = {

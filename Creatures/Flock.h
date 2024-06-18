@@ -10,10 +10,10 @@
 
 class Flock {
 public:
-    explicit Flock(Animal animal, float size, size_t nb_members);
+    explicit Flock(Animal animal, float size, size_t nb_members, float max_speed, float max_force);
     void put_on_rectangle(float width, float height, size_t columns, size_t rows);
     void draw(sf::RenderTarget &target);
-    void update(sf::Time const delta_time, FlockMember &member) const;
+    void update(sf::Time delta_time, FlockMember &member) const;
     void move(sf::Vector2f v);
 
     Animal animal;
