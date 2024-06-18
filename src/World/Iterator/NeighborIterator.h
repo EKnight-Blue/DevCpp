@@ -4,7 +4,7 @@
 #include "World/World.h"
 
 /**
- * Search around the world for FlockMembers of a certain type in eye-sight of of another member
+ * Search around the world for FlockMembers of a certain type in eye-sight of another member
  */
 class NeighborIterator{
 public:

@@ -88,6 +88,7 @@ void Flock::set_vertices() {
             vertex_array[4 * index + j].position = member_position + size * (
                     // Position the points relative to the mid-bottom the image
                     sf::Vector2f{-.5f, -1.f} + texture_anchors[j]
+
             // Horizontal flipping according the orientation
             ) * sf::Vector2f{(members[index].orientation.x < 0.) ? -1.f : 1.f ,1.f};
             vertex_array[4 * index + j].texCoords =

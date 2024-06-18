@@ -12,12 +12,12 @@ public:
     void make_sub_gui() override;
     void draw(sf::RenderTarget & target) override;
 
+    QuadTree tree;
 private:
     float width;
     float height;
-    QuadTree tree;
     bool is_toroidal{true};
-    bool show_tree{false};
+    bool show_tree{true};
     friend class QuadIterator;
 
     void validate_toroidal_position(sf::Vector2f & point) const;

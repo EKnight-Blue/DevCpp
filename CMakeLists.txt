@@ -12,9 +12,6 @@ add_library(BoidLib STATIC
         src/Behavior/CombineBehavior.cpp
         src/utils.h
         src/utils.cpp
-        src/interface.h
-        src/interface.cpp
-        src/interface.cpp
         src/World/Noise.h
         src/World/Noise.cpp
         src/World/World.h
