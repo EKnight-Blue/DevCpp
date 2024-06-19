@@ -56,7 +56,7 @@ FlockMember const * QuadIterator::next() {
             ++current;
 
             // out of siblings
-            if (current == parent->children.data() + 4) {
+            if (current == &4[parent->children.data()]) {
                 // pop the "stack"
                 current = parent;
                 continue;
