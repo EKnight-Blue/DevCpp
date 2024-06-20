@@ -30,7 +30,7 @@ void handle_events(sf::RenderWindow &window) {
                 last_button = -1;
             break;
         case sf::Event::MouseMoved:
-            if (last_button != sf::Mouse::Middle)
+            if (last_button != sf::Mouse::Right)
                 break;
             new_mouse_position =
                 window.mapPixelToCoords(sf::Mouse::getPosition(window));
@@ -90,7 +90,7 @@ int main() {
     Flock &f1{w.flocks[0]};
     f1.move({800.f, 800.f});
 
-    auto cb{w.behaviors.begin()};
+    auto cb{w.behaviors.rbegin()};
     cb->add(AtomicBehavior::Type::Cohesion,
             {.cas = {.range = 40.f, .cos_fov = -0.5f}}, 15.f);
     cb->add(AtomicBehavior::Type::Alignment,
@@ -101,6 +101,24 @@ int main() {
             {.wander = {.sphere_dist = 100.f,
                         .sphere_radius = 90.f,
                         .displacement_amplitude = .5f}},
+            5.f);
+
+    w.flocks.emplace_back(Animal::Rabbit, 20.f, 2000, 50.f, 100.f);
+    w.behaviors.emplace_back();
+    Flock &f2{w.flocks[1]};
+    f2.move({800.f, 800.f});
+
+    cb = w.behaviors.rbegin();
+    cb->add(AtomicBehavior::Type::Cohesion,
+            {.cas = {.range = 40.f, .cos_fov = -0.5f}}, 15.f);
+    cb->add(AtomicBehavior::Type::Alignment,
+            {.cas = {.range = 30.f, .cos_fov = .4f}}, 15.f);
+    cb->add(AtomicBehavior::Type::Separation,
+            {.cas = {.range = 50.f, .cos_fov = -.5f}}, 10.f);
+    cb->add(AtomicBehavior::Type::Wander,
+            {.wander = {.sphere_dist = 100.f,
+                    .sphere_radius = 90.f,
+                    .displacement_amplitude = .5f}},
             5.f);
 
     sf::Clock c{};
