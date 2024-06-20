@@ -60,6 +60,8 @@ void handle_events(sf::RenderWindow &window) {
         case sf::Event::KeyPressed:
             if (event.key.code == sf::Keyboard::Q) {
                 window.close();
+            } else if (event.key.code == sf::Keyboard::R) {
+                window.setView(window.getDefaultView());
             }
             break;
 
@@ -81,7 +83,7 @@ int main() {
     sf::Texture texture;
     texture.loadFromFile("./resources/bg.jpg");
     sf::Sprite background(texture);
-    sf::RenderWindow window{sf::VideoMode{800, 800}, "Game"};
+    sf::RenderWindow window{sf::VideoMode{1920, 1080}, "Game"};
     window.setFramerateLimit(0);
     FiniteWorld w{1600.f, 1600.f};
     w.flocks.emplace_back(Animal::Bird, 20.f, 2000, 50.f, 100.f);
@@ -117,8 +119,8 @@ int main() {
             {.cas = {.range = 50.f, .cos_fov = -.5f}}, 10.f);
     cb->add(AtomicBehavior::Type::Wander,
             {.wander = {.sphere_dist = 100.f,
-                    .sphere_radius = 90.f,
-                    .displacement_amplitude = .5f}},
+                        .sphere_radius = 90.f,
+                        .displacement_amplitude = .5f}},
             5.f);
 
     sf::Clock c{};
