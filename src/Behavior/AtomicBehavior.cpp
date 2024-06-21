@@ -1,6 +1,7 @@
 #include "AtomicBehavior.h"
 #include "utils.h"
 #include <functional>
+#include <bit>
 
 #include "imgui-SFML.h"
 #include "imgui.h"

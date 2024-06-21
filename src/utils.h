@@ -5,6 +5,7 @@
 #define BOIDSFML_UTILS_H
 #include "SFML/Graphics.hpp"
 #include <cmath>
+#include <numbers>
 
 // complex product
 sf::Vector2f operator^(sf::Vector2f const& v1, sf::Vector2f const& v2);
@@ -23,7 +24,6 @@ inline float sq_magnitude(sf::Vector2f const& v) {
 }
 
 float random_float();
-uint8_t random_uint8();
 size_t random_size();
 
 template<typename T>
@@ -40,6 +40,6 @@ constexpr T pow_i(T base, std::size_t power) {
 };
 
 
-constexpr float TWO_PI = 2.f * static_cast<float>(M_PI);
+constexpr float TWO_PI = 2.f * static_cast<float>(std::numbers::pi);
 
 #endif //BOIDSFML_UTILS_H

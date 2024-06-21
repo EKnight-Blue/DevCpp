@@ -83,10 +83,10 @@ int main() {
     sf::Texture texture;
     texture.loadFromFile("./resources/bg.jpg");
     sf::Sprite background(texture);
-    sf::RenderWindow window{sf::VideoMode{1920, 1080}, "Game"};
-    window.setFramerateLimit(0);
+    sf::RenderWindow window{sf::VideoMode{1600, 900}, "Game"};
+//    window.setFramerateLimit(0);
     FiniteWorld w{1600.f, 1600.f};
-    w.flocks.emplace_back(Animal::Bird, 20.f, 2000, 50.f, 100.f);
+    w.flocks.emplace_back(Animal::Bird, 20.f, 1000, 50.f, 100.f);
     w.behaviors.emplace_back();
 
     Flock &f1{w.flocks[0]};
@@ -105,7 +105,7 @@ int main() {
                         .displacement_amplitude = .5f}},
             5.f);
 
-    w.flocks.emplace_back(Animal::Rabbit, 20.f, 2000, 50.f, 100.f);
+    w.flocks.emplace_back(Animal::Rabbit, 20.f, 1000, 50.f, 100.f);
     w.behaviors.emplace_back();
     Flock &f2{w.flocks[1]};
     f2.move({800.f, 800.f});

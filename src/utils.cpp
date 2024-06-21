@@ -32,12 +32,6 @@ float random_float() {
     return distribution(engine);
 }
 
-uint8_t random_uint8() {
-    static std::random_device rd;
-    static std::default_random_engine engine(rd());
-    static std::uniform_int_distribution<uint8_t> distribution{0, 255};
-    return distribution(engine);
-}
 
 size_t random_size() {
     static std::random_device rd;
