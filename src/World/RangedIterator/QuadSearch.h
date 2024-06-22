@@ -17,10 +17,9 @@ public:
 private:
     QuadTree * current_node;
     size_t element_index{0};
-    float x_min;
-    float dy;
 
-    std::array<sf::Vector2f, 4> approximation_rect;
+    sf::Vector2f approximation_top_left;
+    sf::Vector2f approximation_bottom_right;
 
     FlockMember * process_elements();
     bool intersects(QuadTree * tree);

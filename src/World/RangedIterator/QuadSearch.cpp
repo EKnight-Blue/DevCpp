@@ -8,17 +8,11 @@
 
 QuadSearch::QuadSearch(FiniteWorld *world, Animal animal, const FlockMember &eyes, FOV fov)
     : NeighborSearch(world, animal, eyes, fov), current_node{&world->tree},
-    x_min(fov.range * ((fov.cos_fov < 0.f) ? fov.cos_fov : 0.f)),
-    dy(fov.range * ((fov.cos_fov < 0.f) ? 1.f : sqrtf(1.f - fov.cos_fov * fov.cos_fov))),
-    approximation_rect{{
-       sf::Vector2f{fov.range, dy} ^ eyes.orientation,
-       sf::Vector2f{fov.range, -dy} ^ eyes.orientation,
-       sf::Vector2f{x_min, dy} ^ eyes.orientation,
-       sf::Vector2f{x_min, -dy} ^ eyes.orientation
-}} {
-    for (auto& point : approximation_rect) {
-        std::invoke(world->validator, world, point);
-    }
+    approximation_top_left(eyes.position - sf::Vector2f{fov.range, fov.range}),
+    approximation_bottom_right(eyes.position + sf::Vector2f{fov.range, fov.range})
+{
+    std::invoke(world->validator, world, approximation_top_left);
+    std::invoke(world->validator, world, approximation_bottom_right);
 }
 
 
@@ -38,24 +32,21 @@ FlockMember *QuadSearch::process_elements() {
 }
 
 bool QuadSearch::intersects(QuadTree *tree) {
-    for (auto& point : approximation_rect) {
-        if (tree->top_left.x >= point.x && tree->top_left.y >= point.y && tree->bottom_right.x <= point.x && tree->bottom_right.y <= point.y)
-            return true;
-    }
-    sf::Vector2f v1{world->position_difference(tree->top_left, eyes.position)};
-    sf::Vector2f v2{world->position_difference(tree->bottom_right, eyes.position)};
+    sf::Vector2f inter_top_left;
+    inter_top_left.x = (approximation_top_left.x > approximation_bottom_right.x || tree->top_left.x > approximation_top_left.x) ? tree->top_left.x : approximation_top_left.x;
+    inter_top_left.y = (approximation_top_left.y > approximation_bottom_right.y || tree->top_left.y > approximation_top_left.y) ? tree->top_left.y : approximation_top_left.y;
 
-    for (auto& point : {v1, v2, sf::Vector2f(v1.x, v2.y), sf::Vector2f(v2.x, v1.y)}) {
-        sf::Vector2f vec{point ^ ~eyes.orientation};
-        if (vec.x <= fov.range && x_min <= vec.x && vec.y <= dy && -dy <= vec.y)
-            return true;
-    }
-    return false;
+    sf::Vector2f inter_bottom_right;
+    inter_bottom_right.x = (approximation_top_left.x > approximation_bottom_right.x || tree->bottom_right.x < approximation_bottom_right.x) ? tree->bottom_right.x : approximation_bottom_right.x;
+    inter_bottom_right.y = (approximation_top_left.y > approximation_bottom_right.y || tree->bottom_right.y < approximation_bottom_right.y) ? tree->bottom_right.y : approximation_bottom_right.y;
+
+    return inter_top_left.x < inter_bottom_right.x && inter_top_left.y < inter_bottom_right.y;
 }
 
 bool QuadSearch::propagate_to_children() {
     for (auto& child : current_node->children) {
-        if (child.intersects_fov(eyes.position, eyes.orientation, sq_range, fov.cos_fov, world)) {
+        if (intersects(&child)) {
+//        if (child.intersects_fov(eyes.position, eyes.orientation, sq_range, fov.cos_fov, world)) {
             current_node = &child;
             return true;
         }
@@ -84,7 +75,8 @@ FlockMember *QuadSearch::next() {
                 current_node = parent;
                 continue;
             }
-            if (current_node->intersects_fov(eyes.position, eyes.orientation, sq_range, fov.cos_fov, world))
+//            if (current_node->intersects_fov(eyes.position, eyes.orientation, sq_range, fov.cos_fov, world))
+            if (intersects(current_node))
                 // current is valid
                 break;
         }
