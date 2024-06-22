@@ -23,10 +23,7 @@ void World::update(sf::Time delta_time) {
 
 
 void World::make_gui() {
-    if (ImGui::TreeNode("World")) {
-        make_sub_gui();
-        ImGui::TreePop();
-    }
+    make_sub_gui();
 }
 
 void World::new_flock() {

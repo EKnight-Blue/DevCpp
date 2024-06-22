@@ -140,7 +140,8 @@ int main() {
         window.draw(background);
         w.draw(window);
         ImGui::SFML::Update(window, dt);
-        if (ImGui::Begin("Menu")) {
+        static bool open_window;
+        if (ImGui::Begin("Menu", &open_window)) {
             w.make_gui();
         }
         ImGui::End();

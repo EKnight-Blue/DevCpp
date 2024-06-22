@@ -25,6 +25,7 @@ struct NeighborGenerator {
             value = new_value;
             return {};
         }
+        void return_void() {}
     };
     struct iterator {
         bool operator!=(const iterator& ) const { return !handle->done(); }
