@@ -9,6 +9,7 @@
 class NaiveSearch : public NeighborSearch {
 public:
     NaiveSearch(World *world, Animal animal, FlockMember const& eyes, FOV fov);
+    NeighborGenerator co_neighbors() override;
 protected:
     FlockMember* next() override;
 private:

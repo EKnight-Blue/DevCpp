@@ -9,6 +9,7 @@
 #include <cstdint>
 #include "Creatures/Animals.h"
 #include "SFML/Graphics.hpp"
+#include "RangedIterator/NeighborSearch.h"
 
 constexpr size_t QuadTreeSize = 8;
 
@@ -20,6 +21,7 @@ struct QuadTreeElement{
 };
 
 class World;
+class QuadSearch;
 class QuadTree{
 public:
     QuadTree(sf::Vector2f top_left, sf::Vector2f bottom_right, QuadTree * parent);
@@ -37,6 +39,7 @@ public:
     QuadTree * parent;
 
     void draw(sf::RenderTarget &target);
+    NeighborGenerator search(QuadSearch& algo);
 private:
     [[nodiscard]] size_t chose_quadrant(sf::Vector2f const& point) const;
     void divide();

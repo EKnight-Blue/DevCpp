@@ -8,10 +8,9 @@
 #include "World/FiniteWorld.h"
 
 class QuadSearch : public NeighborSearch {
-protected:
-    FlockMember* next() override;
-
 public:
+    FlockMember* next() override;
+    NeighborGenerator co_neighbors() override;
     QuadSearch(FiniteWorld *world, Animal animal, FlockMember const& eyes, FOV fov);
 
 private:
@@ -24,6 +23,7 @@ private:
     FlockMember * process_elements();
     bool intersects(QuadTree const *tree) const;
     bool propagate_to_children();
+    friend QuadTree;
 };
 
 #endif //BOIDSFML_QUADSEARCH_H

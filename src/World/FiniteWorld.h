@@ -7,8 +7,9 @@ public:
     FiniteWorld(float width, float height) : tree{{0.f, 0.f}, {width, height}, nullptr}, width{width}, height{height} {};
     [[nodiscard]] sf::Vector2f position_difference(sf::Vector2f const& v1, sf::Vector2f const & v2) const override;
     void update(sf::Time delta_time) override;
-    [[nodiscard]] virtual std::unique_ptr<NeighborSearch> make_neighbor_iterator(Animal animal, FlockMember const &member, AtomicBehavior::Parameters::DetectionFOV fov);
+    [[nodiscard]] std::unique_ptr<NeighborSearch> make_neighbor_iterator(Animal animal, FlockMember const &member, AtomicBehavior::Parameters::DetectionFOV fov) override;
     [[nodiscard]] NeighborRange neighbors(Animal animal, FlockMember const &eyes, AtomicBehavior::Parameters::DetectionFOV fov) override;
+    [[nodiscard]] NeighborGenerator co_neighbors(Animal animal, FlockMember const &eyes, AtomicBehavior::Parameters::DetectionFOV fov) override;
 
     void make_sub_gui() override;
     void draw(sf::RenderTarget & target) override;

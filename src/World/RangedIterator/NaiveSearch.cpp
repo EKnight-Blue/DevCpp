@@ -2,6 +2,7 @@
 //
 
 #include "NaiveSearch.h"
+#include "World/World.h"
 
 NaiveSearch::NaiveSearch(World *world, Animal animal, const FlockMember &eyes, FOV fov) :
         NeighborSearch(world, animal, eyes, fov) {}
@@ -23,4 +24,17 @@ FlockMember *NaiveSearch::next() {
         }
     }
     return nullptr;
+}
+
+NeighborGenerator NaiveSearch::co_neighbors() {
+    for (auto& flock : world->flocks) {
+        if (flock.animal != animal) continue;
+        for (auto& candidate : flock.members) {
+            if (&candidate == &eyes) continue;
+
+            if (test(candidate.position)) {
+                co_yield &candidate;
+            }
+        }
+    }
 }

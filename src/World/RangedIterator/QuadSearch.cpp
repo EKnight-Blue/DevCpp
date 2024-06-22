@@ -84,3 +84,7 @@ FlockMember *QuadSearch::next() {
             return nullptr;
     }
 }
+
+NeighborGenerator QuadSearch::co_neighbors() {
+    return current_node->search(*this);
+}

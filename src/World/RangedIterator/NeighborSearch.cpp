@@ -1,4 +1,5 @@
 #include "NeighborSearch.h"
+#include "World/World.h"
 #include "utils.h"
 
 NeighborSearch::NeighborSearch(World *world, Animal animal, const FlockMember &eyes, FOV fov)

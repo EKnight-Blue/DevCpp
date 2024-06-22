@@ -96,3 +96,7 @@ void World::process_behaviors() {
 NeighborRange World::neighbors(Animal animal, const FlockMember &eyes, AtomicBehavior::Parameters::DetectionFOV fov) {
     return NeighborRange(std::make_unique<NaiveSearch>(this, animal, eyes, fov));
 }
+
+NeighborGenerator World::co_neighbors(Animal animal, FlockMember const &eyes, AtomicBehavior::Parameters::DetectionFOV fov) {
+    return NaiveSearch(this, animal, eyes, fov).co_neighbors();
+}

@@ -1,5 +1,5 @@
 #include "QuadTree.h"
-#include "World.h"
+#include "RangedIterator/QuadSearch.h"
 #include "utils.h"
 
 QuadTree::QuadTree(sf::Vector2f const top_left, sf::Vector2f const bottom_right, QuadTree * parent) : top_left(top_left), bottom_right(bottom_right), center{0.5f * (top_left + bottom_right)}, parent{parent} {
@@ -77,4 +77,22 @@ size_t QuadTree::count() const {
         result += child.count();
     }
     return result;
+}
+
+NeighborGenerator QuadTree::search(QuadSearch &algo) {
+    for (int index{0}; index < cnt; ++index) {
+        QuadTreeElement const& candidate{elements[index]};
+        if (candidate.animal != algo.animal) continue;
+        if (!algo.test(candidate.position)) continue;
+
+        FlockMember * result{&algo.world->flocks[candidate.flock_index].members[candidate.member_index]};
+        if (result == &algo.eyes) continue;
+        co_yield result;
+    }
+    for (auto& child : children) {
+        if (algo.intersects(&child)) {
+            for (auto result : child.search(algo))
+                co_yield &result;
+        }
+    }
 }

@@ -35,9 +35,10 @@ add_library(BoidLib STATIC
 )
 target_include_directories(BoidLib PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 target_link_libraries(BoidLib PUBLIC  sfml-graphics ImGui-SFML::ImGui-SFML)
-add_executable(BoidSFML src/main.cpp
+target_compile_options(BoidLib PUBLIC "-fcoroutines")
+add_executable(BoidSFML src/main.cpp)
+target_compile_options(BoidSFML PUBLIC "-fcoroutines")
 
-)
 target_include_directories(BoidSFML PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 
 include(FetchContent)
@@ -100,6 +101,7 @@ add_executable(tests
 
 target_link_libraries(tests GTest::gtest_main sfml-graphics BoidLib)
 target_include_directories(tests PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
+target_compile_options(tests PUBLIC "-fcoroutines")
 
 include(GoogleTest)
 gtest_discover_tests(tests)
