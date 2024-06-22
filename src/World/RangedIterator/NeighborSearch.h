@@ -56,6 +56,7 @@ public:
     virtual FlockMember* next() = 0;
     virtual NeighborGenerator co_neighbors() = 0;
 protected:
+    friend World;
     [[nodiscard]] bool test(sf::Vector2f point);
     World * const world;
     Animal const animal;

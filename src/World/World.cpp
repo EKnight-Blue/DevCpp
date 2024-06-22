@@ -95,5 +95,15 @@ NeighborRange World::neighbors(Animal animal, const FlockMember &eyes, AtomicBeh
 }
 
 NeighborGenerator World::co_neighbors(Animal animal, FlockMember const &eyes, AtomicBehavior::Parameters::DetectionFOV fov) {
-    return NaiveSearch(this, animal, eyes, fov).co_neighbors();
+    NaiveSearch s{this, animal, eyes, fov};
+    for (auto& flock : flocks) {
+        if (flock.animal != animal) continue;
+        for (auto& candidate : flock.members) {
+            if (&candidate == &eyes) continue;
+
+            if (s.test(candidate.position)) {
+                co_yield &candidate;
+            }
+        }
+    }
 }

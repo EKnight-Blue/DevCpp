@@ -84,7 +84,10 @@ NeighborRange FiniteWorld::neighbors(Animal animal, const FlockMember &eyes, Ato
 }
 
 NeighborGenerator FiniteWorld::co_neighbors(Animal animal, const FlockMember &eyes, AtomicBehavior::Parameters::DetectionFOV fov) {
-    return QuadSearch(this, animal, eyes, fov).co_neighbors();
+    QuadSearch s(this, animal, eyes, fov);
+    for (auto& nb : tree.search(s)) {
+        co_yield &nb;
+    }
 }
 
 void FiniteWorld::make_sub_gui() {
