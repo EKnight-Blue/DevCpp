@@ -36,6 +36,7 @@ add_library(BoidLib STATIC
 target_include_directories(BoidLib PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 target_link_libraries(BoidLib PUBLIC  sfml-graphics ImGui-SFML::ImGui-SFML)
 target_compile_options(BoidLib PUBLIC "-fcoroutines")
+#target_compile_definitions(BoidLib PUBLIC -DUSE_COROUTINES)
 add_executable(BoidSFML src/main.cpp)
 target_compile_options(BoidSFML PUBLIC "-fcoroutines")
 

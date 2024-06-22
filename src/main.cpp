@@ -75,6 +75,11 @@ void handle_events(sf::RenderWindow &window) {
 }
 
 int main() {
+#ifdef USE_COROUTINES
+    std::cout << "Coroutines  !!!\n";
+#else
+    std::cout << "No Coroutines !!!\n";
+#endif
     float fps_somme = 0;
     long long int fps_compte = 0;
 #ifdef WIN32

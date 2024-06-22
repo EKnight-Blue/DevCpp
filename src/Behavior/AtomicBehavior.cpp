@@ -2,6 +2,7 @@
 #include "utils.h"
 #include <functional>
 #include <bit>
+#include <iostream>
 
 #include "imgui-SFML.h"
 #include "imgui.h"
@@ -89,8 +90,11 @@ void AtomicBehavior::cohesion(Flock const& flock, FlockMember &member, World *wo
     sf::Vector2f desired_velocity{0., 0.};
     size_t neighbor_cnt = 0;
 
-
+#ifdef USE_COROUTINES
+    for (FlockMember const& neighbor : world->co_neighbors(flock.animal, member, parameters.cas)) {
+#else
     for (FlockMember const& neighbor : world->neighbors(flock.animal, member, parameters.cas)) {
+#endif
         ++neighbor_cnt;
         // average position of neighbors
         desired_velocity += world->position_difference(neighbor.position, member.position);
@@ -112,8 +116,11 @@ void AtomicBehavior::alignment(Flock const& flock, FlockMember &member, World *w
     sf::Vector2f desired_velocity{0., 0.};
     size_t neighbor_cnt = 0;
 
-
+#ifdef USE_COROUTINES
+    for (FlockMember const& neighbor : world->co_neighbors(flock.animal, member, parameters.cas)) {
+#else
     for (FlockMember const& neighbor : world->neighbors(flock.animal, member, parameters.cas)) {
+#endif
         // average speed of neighbors
         desired_velocity += neighbor.speed * neighbor.orientation;
         ++neighbor_cnt;
@@ -132,7 +139,12 @@ void AtomicBehavior::alignment(Flock const& flock, FlockMember &member, World *w
  */
 void AtomicBehavior::separation(Flock const& flock, FlockMember &member, World *world) const {
     sf::Vector2f force{0., 0.};
+
+#ifdef USE_COROUTINES
+    for (FlockMember const& neighbor : world->co_neighbors(flock.animal, member, parameters.cas)) {
+#else
     for (FlockMember const& neighbor : world->neighbors(flock.animal, member, parameters.cas)) {
+#endif
         sf::Vector2f vec = world->position_difference(member.position, neighbor.position);
         float sq_mag = sq_magnitude(vec);
         if (0.f != sq_mag)
@@ -164,8 +176,11 @@ void AtomicBehavior::pursuit([[maybe_unused]] Flock const &flock, [[maybe_unused
     FlockMember const * best{nullptr};
     float best_dist{HUGE_VALF};
     // chose the closest member of the targeted animal
-
+#ifdef USE_COROUTINES
+    for (FlockMember const& neighbor : world->co_neighbors(parameters.pursuit_evasion.animal, member, parameters.pursuit_evasion.fov)) {
+#else
     for (FlockMember const& neighbor : world->neighbors(parameters.pursuit_evasion.animal, member, parameters.pursuit_evasion.fov)) {
+#endif
         float dist{magnitude(world->position_difference(neighbor.position, member.position))};
         if (dist < best_dist){
             best_dist = dist;
@@ -193,7 +208,11 @@ void AtomicBehavior::evasion([[maybe_unused]] Flock const &flock, [[maybe_unused
     FlockMember const *best{nullptr};
     float best_dist{HUGE_VALF};
     // chose the closest member of the targeted animal
+#ifdef USE_COROUTINES
+    for (FlockMember const& neighbor : world->co_neighbors(parameters.pursuit_evasion.animal, member, parameters.pursuit_evasion.fov)) {
+#else
     for (FlockMember const& neighbor : world->neighbors(parameters.pursuit_evasion.animal, member, parameters.pursuit_evasion.fov)) {
+#endif
         float dist{magnitude(world->position_difference(neighbor.position, member.position))};
         if (dist < best_dist){
             best_dist = dist;
