@@ -25,7 +25,7 @@ public:
     [[nodiscard]] virtual std::unique_ptr<NeighborSearch> make_neighbor_iterator(Animal animal, FlockMember const &member, AtomicBehavior::Parameters::DetectionFOV fov);
     // c++ idiomatic iterator
     [[nodiscard]] virtual NeighborRange neighbors(Animal animal, FlockMember const &eyes, AtomicBehavior::Parameters::DetectionFOV fov);
-    // c++ coroutine based iteration
+    // coroutine-based iteration -*- uncomment/comment `target_compile_definitions(BoidLib PUBLIC -DUSE_COROUTINES)` in CMakeLists.txt to use or not
     [[nodiscard]] virtual NeighborGenerator co_neighbors(Animal animal, FlockMember const &eyes, AtomicBehavior::Parameters::DetectionFOV fov);
 
     std::vector<Flock> flocks{};
