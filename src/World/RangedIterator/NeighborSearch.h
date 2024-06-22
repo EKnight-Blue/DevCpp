@@ -18,14 +18,14 @@ struct NeighborGenerator {
         FlockMember* value;
         NeighborGenerator get_return_object() { return NeighborGenerator(this); }
 
-        void unhandled_exception(){};
+        void unhandled_exception() const {};
         static std::suspend_never initial_suspend() { return {}; }
         static std::suspend_always final_suspend() noexcept { return {}; }
         std::suspend_always yield_value(FlockMember* new_value) {
             value = new_value;
             return {};
         }
-        void return_void() {}
+        void return_void() const {}
     };
     struct iterator {
         bool operator!=(const iterator& ) const { return !handle->done(); }
@@ -57,7 +57,7 @@ public:
     virtual NeighborGenerator co_neighbors() = 0;
 protected:
     friend World;
-    [[nodiscard]] bool test(sf::Vector2f point);
+    [[nodiscard]] bool test(sf::Vector2f const &point) const;
     World * const world;
     Animal const animal;
     FlockMember const& eyes;

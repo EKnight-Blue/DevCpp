@@ -6,7 +6,7 @@ NeighborSearch::NeighborSearch(World *world, Animal animal, const FlockMember &e
     : world(world), animal(animal), eyes{eyes}, fov(fov), sq_range(fov.range * fov.range) {}
 
 
-bool NeighborSearch::test(sf::Vector2f point) {
+bool NeighborSearch::test(sf::Vector2f const &point) const {
     sf::Vector2f vec{world->position_difference(point, eyes.position)};
     float sq_mag = sq_magnitude(vec);
     return sq_mag < sq_range && dot(eyes.orientation, vec) >= fov.cos_fov * sqrtf(sq_mag);

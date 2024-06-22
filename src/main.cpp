@@ -89,7 +89,7 @@ int main() {
     texture.loadFromFile("./resources/bg.jpg");
     sf::Sprite background(texture);
     sf::RenderWindow window{sf::VideoMode{1600, 900}, "Press N to see the next test"};
-//    window.setFramerateLimit(30.f);
+    window.setFramerateLimit(30.f);
     FiniteWorld w{1600.f, 1600.f};
     w.flocks.emplace_back(Animal::Bird, 20.f, 1000, 50.f, 100.f);
     w.behaviors.emplace_back();
@@ -145,8 +145,7 @@ int main() {
         window.draw(background);
         w.draw(window);
         ImGui::SFML::Update(window, dt);
-        static bool open_window;
-        if (ImGui::Begin("Menu", &open_window)) {
+        if (static bool open_window{true}; ImGui::Begin("Menu", &open_window)) {
             w.make_gui();
         }
         ImGui::End();
