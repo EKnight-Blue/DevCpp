@@ -195,3 +195,11 @@ void QuadTree::draw(sf::RenderTarget &target) {
         child.draw(target);
     }
 }
+
+size_t QuadTree::count() const {
+    size_t result = cnt;
+    for (auto const& child : children) {
+        result += child.count();
+    }
+    return result;
+}

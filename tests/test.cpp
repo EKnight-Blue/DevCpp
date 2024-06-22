@@ -1,11 +1,15 @@
 #include "gtest/gtest.h"
+#include "Behavior/AtomicBehavior.h"
 #include "Creatures/Flock.h"
-#include "World/QuadTree.h"
-#include "utils.h"
+#include "SFML/System/Clock.hpp"
 #include "World/FiniteWorld.h"
-#include <memory>
-#include "World/Iterator/QuadIterator.h"
+#include "imgui-SFML.h"
+#include "imgui.h"
+#include <cmath>
 #include <iostream>
+#include "World/Iterator/QuadIterator.h"
+#include "utils.h"
+#include <functional>
 #include "World/RangedIterator/QuadSearch.h"
 
 // So that we have at least one test
@@ -48,8 +52,8 @@ TEST(Tree, Iteration) {
     float angle{0.f};
     uint16_t index{0};
     for (auto& member : world.flocks[0].members) {
-        member.position.x  = W * 0.5f + 0.25f * W * cosf(angle);
-        member.position.y  = W * 0.5f + 0.25f * W * sinf(angle);
+        member.position.x = W * 0.5f + 0.25f * W * cosf(angle);
+        member.position.y = W * 0.5f + 0.25f * W * sinf(angle);
         world.tree.insert({
            .animal = Animal::Bird,
            .position = member.position,
@@ -73,18 +77,19 @@ TEST(Tree, Iteration) {
     }
 }
 
-TEST(Tree, IterationRanged) {
+TEST(Tree, IterationWrapped) {
     constexpr float W{800.f};
     FiniteWorld world{W, W};
-    constexpr int32_t nb{8096};
+    constexpr int32_t nb{8};
     world.flocks.emplace_back(Animal::Bird, 20, nb, 0.f, 0.f);
 
     constexpr float increment{TWO_PI / static_cast<float>(nb)};
     float angle{0.f};
     uint16_t index{0};
     for (auto& member : world.flocks[0].members) {
-        member.position.x  = W * 0.5f + 0.25f * W * cosf(angle);
-        member.position.y  = W * 0.5f + 0.25f * W * sinf(angle);
+        member.position.x = 0.25f * W * cosf(angle);
+        member.position.y = 0.25f * W * sinf(angle);
+        std::invoke(world.validator, world, member.position);
         world.tree.insert({
                                   .animal = Animal::Bird,
                                   .position = member.position,
@@ -93,14 +98,18 @@ TEST(Tree, IterationRanged) {
                           });
         angle = static_cast<float>(index) * increment;
     }
+    EXPECT_EQ(world.tree.count(), nb);
+
     FlockMember observer{};
-    observer.position={W * 0.5f, W * 0.5f};
+    observer.position={0, 0};
     angle = increment / 2.f;
     for (int include{0}; include < nb / 2; include++) {
-        int cnt = 0;
-        for (auto const &m : world.neighbors(Animal::Bird, observer, {.range = W * 0.5f, .cos_fov=cosf(angle)})) {
+        int cnt{0};
+        for (auto &m : world.neighbors(Animal::Bird, observer, {.range = W * 0.3f, .cos_fov=cosf(angle)})) {
+            std::cout << " "<< std::distance(world.flocks[0].members.data(), &m);
             ++cnt;
         }
+        std::cout << std::endl;
         EXPECT_EQ(cnt, 2 * include + 1);
         angle = increment * (static_cast<float>(include+1) + .5f);
     }

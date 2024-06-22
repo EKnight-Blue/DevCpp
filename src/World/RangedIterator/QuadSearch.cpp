@@ -24,7 +24,7 @@ FlockMember *QuadSearch::process_elements() {
 
         FlockMember * result{&world->flocks[candidate.flock_index].members[candidate.member_index]};
         if (result == &eyes) continue;
-
+        auto index = std::distance(world->flocks[candidate.flock_index].members.data(), result);
         ++element_index;
         return result;
     }

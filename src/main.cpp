@@ -74,7 +74,7 @@ void handle_events(sf::RenderWindow &window) {
     }
 }
 
-int main() {
+int main_() {
     float fps_somme = 0;
     long long int fps_compte = 0;
 #ifdef WIN32
@@ -83,7 +83,7 @@ int main() {
     sf::Texture texture;
     texture.loadFromFile("./resources/bg.jpg");
     sf::Sprite background(texture);
-    sf::RenderWindow window{sf::VideoMode{1600, 900}, "Game"};
+    sf::RenderWindow window{sf::VideoMode{1600, 900}, "Press N to see the next test"};
 //    window.setFramerateLimit(30.f);
     FiniteWorld w{1600.f, 1600.f};
     w.flocks.emplace_back(Animal::Bird, 20.f, 1000, 50.f, 100.f);
@@ -158,4 +158,57 @@ int main() {
     }
     std::cout << "\nmoyenne : " << fps_somme / static_cast<float>(fps_compte)
               << "fps\x1B[0m" << std::flush;
+}
+
+
+
+#include "utils.h"
+#include <functional>
+#include "World/RangedIterator/QuadSearch.h"
+
+int main() {
+    constexpr float W{800.f};
+    FiniteWorld world{W, W};
+    constexpr int32_t nb{256};
+    world.flocks.emplace_back(Animal::Bird, 20, nb, 0.f, 0.f);
+
+    constexpr float increment{TWO_PI / static_cast<float>(nb)};
+    float angle{0.f};
+    uint16_t index{0};
+    for (auto& member : world.flocks[0].members) {
+        member.position.x = 0.25f * W * cosf(angle);
+        member.position.y = 0.25f * W * sinf(angle);
+        std::invoke(world.validator, world, member.position);
+        world.tree.insert({
+                                  .animal = Animal::Bird,
+                                  .position = member.position,
+                                  .flock_index = 0,
+                                  .member_index = index++
+                          });
+        angle = static_cast<float>(index) * increment;
+    }
+
+    FlockMember observer{};
+    observer.position={0, 0};
+    angle = increment / 2.f;
+    sf::RenderWindow window{sf::VideoMode{800, 800}, "Game"};
+    for (int include{0}; include < nb / 2; include++) {
+        int cnt = 0;
+        for (auto &m : world.flocks[0].members)
+            m.state = 1;
+        for (auto &m : world.neighbors(Animal::Bird, observer, {.range = W * 0.3f, .cos_fov=cosf(angle)})) {
+            m.state = 2;
+            ++cnt;
+        }
+        std::cout << cnt << std::endl;
+        angle = increment * (static_cast<float>(include+1) + .5f);
+        window.clear(sf::Color::White);
+        world.draw(window);
+        window.display();
+        sf::Event event{};
+        do {
+            window.waitEvent(event);
+        } while (event.type != sf::Event::KeyPressed || event.key.code != sf::Keyboard::N);
+    }
+    window.close();
 }

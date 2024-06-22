@@ -85,6 +85,7 @@ void Flock::set_vertices() {
         float state{static_cast<float>(members[index].state)};
         float age{static_cast<float>(members[index].age / ANIMATION_FRAME_TIME_MS)};
         for (int j{0}; j < 4; ++j) {
+            vertex_array[4 * index + j].color = (state == 1.f) ? sf::Color::White : sf::Color::Red;
             vertex_array[4 * index + j].position = member_position + size * (
                     // Position the points relative to the mid-bottom the image
                     sf::Vector2f{-.5f, -1.f} + texture_anchors[j]

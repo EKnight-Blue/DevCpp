@@ -27,6 +27,7 @@ public:
     void reset(float width, float height);
 
     bool intersects_fov(sf::Vector2f const &point, sf::Vector2f const& orientation, float sq_radius, float cos_fov, World const * world) const;
+    size_t count() const;
 
     sf::Vector2f top_left;
     sf::Vector2f bottom_right;
