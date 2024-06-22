@@ -6,7 +6,7 @@
 #include <memory>
 #include "World/Iterator/QuadIterator.h"
 #include <iostream>
-#include "World/NewIterator/QuadSearch.h"
+#include "World/RangedIterator/QuadSearch.h"
 
 // So that we have at least one test
 TEST(Hey, JASON) { ASSERT_TRUE(true); }

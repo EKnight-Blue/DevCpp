@@ -7,7 +7,7 @@
 #include "imgui.h"
 #include "World/World.h"
 #include "World/Iterator/NeighborIterator.h"
-#include "World/NewIterator/NeighborSearch.h"
+#include "World/RangedIterator/NeighborSearch.h"
 
 /**
  * Generic setter

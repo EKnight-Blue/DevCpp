@@ -1,6 +1,6 @@
 #include "FiniteWorld.h"
 #include "World/Iterator/QuadIterator.h"
-#include "World/NewIterator/QuadSearch.h"
+#include "World/RangedIterator/QuadSearch.h"
 #include "imgui-SFML.h"
 #include "imgui.h"
 #include <functional>

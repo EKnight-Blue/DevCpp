@@ -1,7 +1,7 @@
 #include "World.h"
 #include "utils.h"
 #include "World/Iterator/NaiveIterator.h"
-#include "World/NewIterator/NaiveSearch.h"
+#include "World/RangedIterator/NaiveSearch.h"
 #include "imgui-SFML.h"
 #include "imgui.h"
 #include "Behavior/CombinedBehavior.h"
