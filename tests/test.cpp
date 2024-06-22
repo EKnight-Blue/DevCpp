@@ -60,6 +60,7 @@ TEST(Tree, Iteration) {
     }
     FlockMember observer{};
     observer.position={W * 0.5f, W * 0.5f};
+    observer.orientation = {cosf(increment * (nb / 4)), sinf(increment * (nb / 4))};
     angle = increment / 2.f;
     for (int include{0}; include < nb / 2; include++) {
         std::unique_ptr<NeighborIterator> it = world.make_neighbor_iterator(Animal::Bird, observer, W * 0.5f, cosf(angle));
@@ -96,7 +97,6 @@ TEST(Tree, IterationRanged) {
     observer.position={W * 0.5f, W * 0.5f};
     angle = increment / 2.f;
     for (int include{0}; include < nb / 2; include++) {
-        std::unique_ptr<NeighborIterator> it = world.make_neighbor_iterator(Animal::Bird, observer, W * 0.5f, cosf(angle));
         int cnt = 0;
         for (auto const &m : world.neighbors(Animal::Bird, observer, {.range = W * 0.5f, .cos_fov=cosf(angle)})) {
             ++cnt;

@@ -10,7 +10,7 @@
 #include "Creatures/Animals.h"
 #include "SFML/Graphics.hpp"
 
-constexpr size_t QuadTreeSize = 8;
+constexpr size_t QuadTreeSize = 4;
 
 struct QuadTreeElement{
     Animal animal;

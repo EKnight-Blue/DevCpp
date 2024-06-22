@@ -10,7 +10,7 @@ public:
     void make_gui() override;
 private:
     friend class StatedBehavior;
-    void compute_body(Flock& flock, FlockMember& member, World const * world) override;
+    void compute_body(Flock& flock, FlockMember& member, World * world) override;
     std::vector<AtomicBehavior> behaviors{};
 };
 

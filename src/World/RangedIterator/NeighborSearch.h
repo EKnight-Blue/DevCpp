@@ -43,7 +43,7 @@ public:
     };
 
     Iterator begin();
-    static Iterator end();
+    Iterator end();
 
 private:
     std::unique_ptr<NeighborSearch> algo;

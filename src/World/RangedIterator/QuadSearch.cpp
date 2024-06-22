@@ -55,7 +55,7 @@ bool QuadSearch::intersects(QuadTree *tree) {
 
 bool QuadSearch::propagate_to_children() {
     for (auto& child : current_node->children) {
-        if (intersects(&child)) {
+        if (child.intersects_fov(eyes.position, eyes.orientation, sq_range, fov.cos_fov, world)) {
             current_node = &child;
             return true;
         }
@@ -84,7 +84,7 @@ FlockMember *QuadSearch::next() {
                 current_node = parent;
                 continue;
             }
-            if (intersects(current_node))
+            if (current_node->intersects_fov(eyes.position, eyes.orientation, sq_range, fov.cos_fov, world))
                 // current is valid
                 break;
         }

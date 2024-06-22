@@ -11,7 +11,7 @@ public:
      * @param flock
      * @param world
      */
-    void compute(Flock& flock, World const *world) {
+    void compute(Flock& flock, World *world) {
         for (auto& member : flock.members) {
             compute_body(flock, member, world);
         }
@@ -25,7 +25,7 @@ private:
      * @param member
      * @param world
      */
-    virtual void compute_body(Flock& flock, FlockMember& member, World const * world) = 0;
+    virtual void compute_body(Flock& flock, FlockMember& member, World * world) = 0;
 };
 
 #endif //BOIDSFML_BEHAVIOR_H

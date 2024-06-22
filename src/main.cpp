@@ -84,6 +84,7 @@ int main() {
     texture.loadFromFile("./resources/bg.jpg");
     sf::Sprite background(texture);
     sf::RenderWindow window{sf::VideoMode{1600, 900}, "Game"};
+    window.setFramerateLimit(30.f);
     FiniteWorld w{1600.f, 1600.f};
     w.flocks.emplace_back(Animal::Bird, 20.f, 1000, 50.f, 100.f);
     w.behaviors.emplace_back();

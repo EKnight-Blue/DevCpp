@@ -8,7 +8,7 @@
  * @param member
  * @param world
  */
-void CombinedBehavior::compute_body(Flock& flock, FlockMember& member, World const * world) {
+void CombinedBehavior::compute_body(Flock& flock, FlockMember& member, World * world) {
     for (auto& steering : behaviors) {
         steering.compute_body(flock, member, world);
     }

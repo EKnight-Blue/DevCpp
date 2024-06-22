@@ -32,12 +32,12 @@ add_library(BoidLib STATIC
         src/World/Iterator/QuadIterator.h
         src/World/Iterator/QuadIterator.cpp
         src/World/FiniteWorld.cpp
-        src/World/NewIterator/NeighborSearch.h
-        src/World/NewIterator/NeighborSearch.cpp
-        src/World/NewIterator/NaiveSearch.h
-        src/World/NewIterator/QuadSearch.h
-        src/World/NewIterator/NaiveSearch.cpp
-        src/World/NewIterator/QuadSearch.cpp
+        src/World/RangedIterator/NeighborSearch.h
+        src/World/RangedIterator/NeighborSearch.cpp
+        src/World/RangedIterator/NaiveSearch.h
+        src/World/RangedIterator/NaiveSearch.cpp
+        src/World/RangedIterator/QuadSearch.h
+        src/World/RangedIterator/QuadSearch.cpp
 )
 target_include_directories(BoidLib PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 target_link_libraries(BoidLib PUBLIC  sfml-graphics ImGui-SFML::ImGui-SFML)
