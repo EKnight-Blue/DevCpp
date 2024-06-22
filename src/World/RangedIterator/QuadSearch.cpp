@@ -5,6 +5,7 @@
 #include "QuadSearch.h"
 #include "utils.h"
 #include <functional>
+#include <iostream>
 
 QuadSearch::QuadSearch(FiniteWorld *world, Animal animal, const FlockMember &eyes, FOV fov)
     : NeighborSearch(world, animal, eyes, fov), current_node{&world->tree},
@@ -17,14 +18,13 @@ QuadSearch::QuadSearch(FiniteWorld *world, Animal animal, const FlockMember &eye
 
 
 FlockMember *QuadSearch::process_elements() {
-    for (; element_index < QuadTreeSize; ++element_index) {
+    for (; element_index < current_node->cnt; ++element_index) {
         QuadTreeElement const& candidate{current_node->elements[element_index]};
         if (candidate.animal != animal) continue;
         if (!test(candidate.position)) continue;
 
         FlockMember * result{&world->flocks[candidate.flock_index].members[candidate.member_index]};
         if (result == &eyes) continue;
-        auto index = std::distance(world->flocks[candidate.flock_index].members.data(), result);
         ++element_index;
         return result;
     }
@@ -59,9 +59,10 @@ FlockMember *QuadSearch::next() {
         if (FlockMember * result{process_elements()}; result)
             return result;
         element_index = 0;
-        if (propagate_to_children())
+        if (propagate_to_children()) {
             // current has changed
             continue;
+        }
         while (current_node->parent) {
             QuadTree * parent{current_node->parent};
             // try to access next sibling
@@ -73,9 +74,10 @@ FlockMember *QuadSearch::next() {
                 current_node = parent;
                 continue;
             }
-            if (intersects(current_node))
+            if (intersects(current_node)) {
                 // current is valid
                 break;
+            }
         }
         if (!current_node->parent)
             // back to the root, finished

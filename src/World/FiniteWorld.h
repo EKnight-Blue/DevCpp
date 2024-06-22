@@ -20,7 +20,7 @@ private:
     float width;
     float height;
     bool is_toroidal{true};
-    bool show_tree{false};
+    bool show_tree{true};
     friend class QuadIterator;
 
     void validate_toroidal_position(sf::Vector2f & point) const;

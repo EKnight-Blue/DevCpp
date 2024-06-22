@@ -80,7 +80,7 @@ TEST(Tree, Iteration) {
 TEST(Tree, IterationWrapped) {
     constexpr float W{800.f};
     FiniteWorld world{W, W};
-    constexpr int32_t nb{8};
+    constexpr int32_t nb{8192};
     world.flocks.emplace_back(Animal::Bird, 20, nb, 0.f, 0.f);
 
     constexpr float increment{TWO_PI / static_cast<float>(nb)};
@@ -106,7 +106,6 @@ TEST(Tree, IterationWrapped) {
     for (int include{0}; include < nb / 2; include++) {
         int cnt{0};
         for (auto &m : world.neighbors(Animal::Bird, observer, {.range = W * 0.3f, .cos_fov=cosf(angle)})) {
-            std::cout << " "<< std::distance(world.flocks[0].members.data(), &m);
             ++cnt;
         }
         std::cout << std::endl;
