@@ -26,7 +26,6 @@ public:
     void insert(QuadTreeElement const &element);
     void reset(float width, float height);
 
-    bool intersects_fov(sf::Vector2f const &point, sf::Vector2f const& orientation, float sq_radius, float cos_fov, World const * world) const;
     size_t count() const;
 
     sf::Vector2f top_left;
@@ -41,9 +40,6 @@ public:
 private:
     [[nodiscard]] size_t chose_quadrant(sf::Vector2f const& point) const;
     void divide();
-    bool line_line(sf::Vector2f const &v1, sf::Vector2f const &v2, float sq_radius, sf::Vector2f const &director) const;
-    bool arc_line(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq_radius, float cos_fov, const sf::Vector2f &orientation) const;
-    static bool completely_inside(const sf::Vector2f &v1, sf::Vector2f const &v2, float sq_radius, float cos_fov, const sf::Vector2f &orientation) ;
 };
 
 
