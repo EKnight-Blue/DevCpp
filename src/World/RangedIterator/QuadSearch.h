@@ -22,7 +22,7 @@ private:
     sf::Vector2f approximation_bottom_right;
 
     FlockMember * process_elements();
-    bool intersects(QuadTree * tree);
+    bool intersects(QuadTree const *tree) const;
     bool propagate_to_children();
 };
 

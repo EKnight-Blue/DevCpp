@@ -18,7 +18,7 @@ QuadSearch::QuadSearch(FiniteWorld *world, Animal animal, const FlockMember &eye
 
 FlockMember *QuadSearch::process_elements() {
     for (; element_index < QuadTreeSize; ++element_index) {
-        QuadTreeElement& candidate{current_node->elements[element_index]};
+        QuadTreeElement const& candidate{current_node->elements[element_index]};
         if (candidate.animal != animal) continue;
         if (!test(candidate.position)) continue;
 
@@ -31,7 +31,7 @@ FlockMember *QuadSearch::process_elements() {
     return nullptr;
 }
 
-bool QuadSearch::intersects(QuadTree *tree) {
+bool QuadSearch::intersects(QuadTree const *tree) const {
     sf::Vector2f inter_top_left;
     inter_top_left.x = (approximation_top_left.x > approximation_bottom_right.x || tree->top_left.x > approximation_top_left.x) ? tree->top_left.x : approximation_top_left.x;
     inter_top_left.y = (approximation_top_left.y > approximation_bottom_right.y || tree->top_left.y > approximation_top_left.y) ? tree->top_left.y : approximation_top_left.y;
@@ -46,7 +46,6 @@ bool QuadSearch::intersects(QuadTree *tree) {
 bool QuadSearch::propagate_to_children() {
     for (auto& child : current_node->children) {
         if (intersects(&child)) {
-//        if (child.intersects_fov(eyes.position, eyes.orientation, sq_range, fov.cos_fov, world)) {
             current_node = &child;
             return true;
         }
@@ -57,8 +56,7 @@ bool QuadSearch::propagate_to_children() {
 
 FlockMember *QuadSearch::next() {
     while (true) {
-        FlockMember * result{process_elements()};
-        if (result)
+        if (FlockMember * result{process_elements()}; result)
             return result;
         element_index = 0;
         if (propagate_to_children())
@@ -70,12 +68,11 @@ FlockMember *QuadSearch::next() {
             ++current_node;
 
             // out of siblings
-            if (current_node == &4[parent->children.data()]) {
+            if (current_node == parent->children.data() + 4) {
                 // pop the "stack"
                 current_node = parent;
                 continue;
             }
-//            if (current_node->intersects_fov(eyes.position, eyes.orientation, sq_range, fov.cos_fov, world))
             if (intersects(current_node))
                 // current is valid
                 break;
