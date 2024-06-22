@@ -12,6 +12,10 @@ NeighborIterator::NeighborIterator(World const *world, Animal animal, FlockMembe
  */
 bool NeighborIterator::test(const sf::Vector2f &position) const {
     sf::Vector2f vec{world->position_difference(position, member.position)};
+    return test_vector(vec);
+}
+
+bool NeighborIterator::test_vector(const sf::Vector2f &vec) const {
     float sq_mag = sq_magnitude(vec);
     return sq_mag < sq_range && dot(member.orientation, vec) >= cos_fov * sqrtf(sq_mag);
 }

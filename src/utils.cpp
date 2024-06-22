@@ -6,6 +6,12 @@ sf::Vector2f operator^(sf::Vector2f const& v1, sf::Vector2f const& v2) {
     return {v1.x * v2.x - v1.y * v2.y, v1.x * v2.y + v1.y * v2.x};
 }
 
+
+sf::Vector2f operator~(sf::Vector2f const& v){
+    // complex conjugate
+    return {v.x, -v.y};
+};
+
 sf::Vector2f operator*(sf::Vector2f const& v1, sf::Vector2f const& v2) {
     // element-to-element product
     return {v1.x * v2.x, v1.y * v2.y};

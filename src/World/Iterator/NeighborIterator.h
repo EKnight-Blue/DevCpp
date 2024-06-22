@@ -1,4 +1,4 @@
-#ifndef BOIDSFML_NEIGHBORITERATOR_H
+#ifndef BOIDSFML_NEIGHBORSEARCH_H
 #define BOIDSFML_NEIGHBORITERATOR_H
 
 #include "World/World.h"
@@ -11,8 +11,12 @@ public:
     NeighborIterator(World const *world, Animal animal, FlockMember const& member, float range, float cos_fov);
     virtual ~NeighborIterator() = default;
     virtual FlockMember const * next() = 0;
+
+
+
 protected:
     [[nodiscard]] bool test(const sf::Vector2f &position) const;
+    [[nodiscard]] bool test_vector(const sf::Vector2f &position) const;
     World const * world;
     Animal const animal;
     FlockMember const& member;
@@ -22,4 +26,4 @@ protected:
 
 
 
-#endif //BOIDSFML_NEIGHBORITERATOR_H
+#endif //BOIDSFML_NEIGHBORSEARCH_H

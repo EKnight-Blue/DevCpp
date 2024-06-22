@@ -15,33 +15,29 @@ add_library(BoidLib STATIC
         src/World/Noise.h
         src/World/Noise.cpp
         src/World/World.h
-        src/World/World.h
         src/Behavior/StatedBehavior.h
         src/Behavior/StatedBehavior.cpp
         src/World/World.cpp
         src/Creatures/Animals.h
         src/Creatures/FlockMember.h
-        src/Creatures/FlockMember.h
         src/Behavior/Behavior.h
         src/Creatures/Animals.cpp
         src/World/QuadTree.h
-        src/World/QuadTree.h
         src/World/QuadTree.cpp
-        src/World/QuadTree.cpp
-        src/World/FiniteWorld.h
         src/World/FiniteWorld.h
         src/World/Iterator/NeighborIterator.h
         src/World/Iterator/NeighborIterator.cpp
-        src/World/Iterator/NeighborIterator.cpp
         src/World/Iterator/NaiveIterator.h
         src/World/Iterator/NaiveIterator.cpp
-        src/World/Iterator/NaiveIterator.cpp
-        src/World/Iterator/QuadIterator.h
         src/World/Iterator/QuadIterator.h
         src/World/Iterator/QuadIterator.cpp
         src/World/FiniteWorld.cpp
-        src/World/FiniteWorld.cpp
-        src/World/FiniteWorld.cpp
+        src/World/NewIterator/NeighborSearch.h
+        src/World/NewIterator/NeighborSearch.cpp
+        src/World/NewIterator/NaiveSearch.h
+        src/World/NewIterator/QuadSearch.h
+        src/World/NewIterator/NaiveSearch.cpp
+        src/World/NewIterator/QuadSearch.cpp
 )
 target_include_directories(BoidLib PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 target_link_libraries(BoidLib PUBLIC  sfml-graphics ImGui-SFML::ImGui-SFML)

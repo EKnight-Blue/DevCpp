@@ -1,9 +1,9 @@
 #include "FiniteWorld.h"
 #include "World/Iterator/QuadIterator.h"
+#include "World/NewIterator/QuadSearch.h"
 #include "imgui-SFML.h"
 #include "imgui.h"
 #include <functional>
-#include "World/Iterator/NaiveIterator.h"
 
 /**
  * Make up for weird topologies
@@ -58,11 +58,6 @@ void FiniteWorld::validate_toroidal_position(sf::Vector2f &point) const {
  * @param delta_time
  */
 void FiniteWorld::update(sf::Time delta_time) {
-    static std::array<void (FiniteWorld::*)(sf::Vector2f&) const, 2> validators{
-        &FiniteWorld::validate_normal_position,
-        &FiniteWorld::validate_toroidal_position
-    };
-    auto validator = validators[is_toroidal];
     tree.reset(width, height);
     for (uint16_t flock_index{0}; flock_index < flocks.size(); ++flock_index) {
         Flock& flock{flocks[flock_index]};
@@ -85,12 +80,22 @@ std::unique_ptr<NeighborIterator> FiniteWorld::make_neighbor_iterator(Animal ani
     return std::make_unique<QuadIterator>(this, animal, member, range, cos_fov);
 }
 
+NeighborRange FiniteWorld::neighbors(Animal animal, const FlockMember &eyes, AtomicBehavior::Parameters::DetectionFOV fov) {
+    return NeighborRange(std::make_unique<QuadSearch>(this, animal, eyes, fov));
+}
+
 
 void FiniteWorld::make_sub_gui() {
     World::make_sub_gui();
     ImGui::InputFloat("Width", &width);
     ImGui::InputFloat("Height", &height);
-    ImGui::Checkbox("Toroidal World", &is_toroidal);
+    if (ImGui::Checkbox("Toroidal World", &is_toroidal)) {
+        static std::array<void (FiniteWorld::*)(sf::Vector2f&) const, 2> validators{
+                &FiniteWorld::validate_normal_position,
+                &FiniteWorld::validate_toroidal_position
+        };
+        validator = validators[is_toroidal];
+    }
     ImGui::Checkbox("Show QuadTree", &show_tree);
 }
 

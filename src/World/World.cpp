@@ -1,6 +1,7 @@
 #include "World.h"
 #include "utils.h"
 #include "World/Iterator/NaiveIterator.h"
+#include "World/NewIterator/NaiveSearch.h"
 #include "imgui-SFML.h"
 #include "imgui.h"
 #include "Behavior/CombinedBehavior.h"
@@ -91,4 +92,8 @@ void World::process_behaviors() {
     for (size_t index{0}; index < flocks.size(); ++index) {
         behaviors[index].compute(flocks[index], this);
     }
+}
+
+NeighborRange World::neighbors(Animal animal, const FlockMember &eyes, AtomicBehavior::Parameters::DetectionFOV fov) {
+    return NeighborRange(std::make_unique<NaiveSearch>(this, animal, eyes, fov));
 }

@@ -9,6 +9,8 @@
 
 // complex product
 sf::Vector2f operator^(sf::Vector2f const& v1, sf::Vector2f const& v2);
+// complex conjugate
+sf::Vector2f operator~(sf::Vector2f const& v);
 
 // element-to-element product
 sf::Vector2f operator*(sf::Vector2f const& v1, sf::Vector2f const& v2);

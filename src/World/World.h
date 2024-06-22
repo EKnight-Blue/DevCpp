@@ -7,6 +7,7 @@
 #include "QuadTree.h"
 #include "Behavior/CombinedBehavior.h"
 
+class NeighborRange;
 class NeighborIterator;
 class World{
 public:
@@ -20,6 +21,7 @@ public:
     virtual void draw(sf::RenderTarget &target);
 
     [[nodiscard]] virtual std::unique_ptr<NeighborIterator> make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) const;
+    [[nodiscard]] virtual NeighborRange neighbors(Animal animal, FlockMember const &eyes, AtomicBehavior::Parameters::DetectionFOV fov);
     std::vector<Flock> flocks{};
     std::vector<CombinedBehavior> behaviors;
     friend NeighborIterator;
