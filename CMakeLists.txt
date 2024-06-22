@@ -25,12 +25,6 @@ add_library(BoidLib STATIC
         src/World/QuadTree.h
         src/World/QuadTree.cpp
         src/World/FiniteWorld.h
-        src/World/Iterator/NeighborIterator.h
-        src/World/Iterator/NeighborIterator.cpp
-        src/World/Iterator/NaiveIterator.h
-        src/World/Iterator/NaiveIterator.cpp
-        src/World/Iterator/QuadIterator.h
-        src/World/Iterator/QuadIterator.cpp
         src/World/FiniteWorld.cpp
         src/World/RangedIterator/NeighborSearch.h
         src/World/RangedIterator/NeighborSearch.cpp

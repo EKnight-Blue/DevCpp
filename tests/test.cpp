@@ -1,13 +1,9 @@
 #include "gtest/gtest.h"
-#include "Behavior/AtomicBehavior.h"
 #include "Creatures/Flock.h"
-#include "SFML/System/Clock.hpp"
 #include "World/FiniteWorld.h"
-#include "imgui-SFML.h"
 #include "imgui.h"
 #include <cmath>
 #include <iostream>
-#include "World/Iterator/QuadIterator.h"
 #include "utils.h"
 #include <functional>
 #include "World/RangedIterator/QuadSearch.h"
@@ -67,7 +63,7 @@ TEST(Tree, Iteration) {
     observer.orientation = {cosf(increment * (nb / 4)), sinf(increment * (nb / 4))};
     angle = increment / 2.f;
     for (int include{0}; include < nb / 2; include++) {
-        std::unique_ptr<NeighborIterator> it = world.make_neighbor_iterator(Animal::Bird, observer, W * 0.5f, cosf(angle));
+        std::unique_ptr<NeighborSearch> it = world.make_neighbor_iterator(Animal::Bird, observer, {.range=W * 0.5f, .cos_fov=cosf(angle)});
         int cnt = 0;
         for (FlockMember const *member{it->next()}; member; member = it->next()) {
             ++cnt;

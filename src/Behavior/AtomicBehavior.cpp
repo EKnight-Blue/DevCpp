@@ -6,7 +6,6 @@
 #include "imgui-SFML.h"
 #include "imgui.h"
 #include "World/World.h"
-#include "World/Iterator/NeighborIterator.h"
 #include "World/RangedIterator/NeighborSearch.h"
 
 /**

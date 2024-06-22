@@ -1,13 +1,12 @@
 #include "World.h"
 #include "utils.h"
-#include "World/Iterator/NaiveIterator.h"
 #include "World/RangedIterator/NaiveSearch.h"
 #include "imgui-SFML.h"
 #include "imgui.h"
 #include "Behavior/CombinedBehavior.h"
 
-std::unique_ptr<NeighborIterator> World::make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) const {
-    return std::make_unique<NaiveIterator>(this, animal, member, range, cos_fov);
+std::unique_ptr< NeighborSearch> World::make_neighbor_iterator(Animal animal, FlockMember const &member, AtomicBehavior::Parameters::DetectionFOV fov) {
+    return std::make_unique<NaiveSearch>(this, animal, member, fov);
 }
 
 /**

@@ -1,5 +1,4 @@
 #include "FiniteWorld.h"
-#include "World/Iterator/QuadIterator.h"
 #include "World/RangedIterator/QuadSearch.h"
 #include "imgui-SFML.h"
 #include "imgui.h"
@@ -76,8 +75,8 @@ void FiniteWorld::update(sf::Time delta_time) {
     }
 }
 
-std::unique_ptr<NeighborIterator> FiniteWorld::make_neighbor_iterator(Animal animal, FlockMember const &member, float range, float cos_fov) const {
-    return std::make_unique<QuadIterator>(this, animal, member, range, cos_fov);
+std::unique_ptr<NeighborSearch> FiniteWorld::make_neighbor_iterator(Animal animal, FlockMember const &member, AtomicBehavior::Parameters::DetectionFOV fov){
+return std::make_unique<QuadSearch>(this, animal, member, fov);
 }
 
 NeighborRange FiniteWorld::neighbors(Animal animal, const FlockMember &eyes, AtomicBehavior::Parameters::DetectionFOV fov) {
